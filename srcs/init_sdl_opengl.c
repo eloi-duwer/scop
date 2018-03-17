@@ -13,11 +13,56 @@ void	init_sdl_opengl(t_infos *infos)
     infos->glcontext = SDL_GL_CreateContext(infos->window);
 	gladLoadGLLoader(SDL_GL_GetProcAddress);
 	SDL_GL_SetSwapInterval(1);
+	create_program(infos);
+}
+
+
+void	setup_objects(t_infos *infos)
+{
+	GLfloat g_vertex_buffer_data[] = {
+	-1.0f, -1.0f, 0.0f,
+	1.0f, -1.0f, 0.0f,
+	0.0f,  1.0f, 0.0f,
+	};
+
+	GLfloat losange[4][2] = {
+    {  1.0,  0.0  }, /* Right point */
+    {  0.0,  1.0  }, /* Top point */
+    {  0.0, -1.0  }, /* Bottom point */
+    { -1.0,  0.0  } }; /* Left point */
+
+    GLfloat colors[4][3] = {
+    {  0.0,  1.0,  0.0  }, /* Green */
+    {  1.0,  0.0,  0.0  }, /* Red */
+    {  0.0,  0.0,  1.0  }, /* Blue */
+    {  1.0,  1.0,  1.0  } }; /* White */
+
 	glGenVertexArrays(1, &(infos->vertex_array_id));
 	glBindVertexArray(infos->vertex_array_id);
-	glGenBuffers(1, &(infos->vertexbuffer));
-	glBindBuffer(GL_ARRAY_BUFFER, infos->vertexbuffer);
-	create_program(infos);
+	glGenBuffers(2, &(infos->vertexbuffers));
+	glBindBuffer(GL_ARRAY_BUFFER, infos->vertexbuffers[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(losange), \
+		losange, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(
+		0,
+		2,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0
+	);
+	glBindBuffer(GL_ARRAY_BUFFER, infos->vertexbuffers[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(
+		1,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		0,
+		(void*)0
+	);
 }
 
 
