@@ -58,7 +58,7 @@ void	main_loop(t_infos *infos)
 		while (SDL_PollEvent(&(infos->event)))
 			test_event(infos);
 		glClear(GL_COLOR_BUFFER_BIT);
-		glUniformMatrix4fv(mat_id, 1, GL_FALSE, projection.projection_matrix);
+		glUniformMatrix4fv(mat_id, 1, GL_FALSE, matrix);
 		rotation_matrix_Z(matrix, 0.01);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glFlush();
@@ -73,7 +73,5 @@ int		main(int argc, char *argv[])
 	init_sdl_opengl(&infos);
 	setup_objects(&infos);
 	main_loop(&infos);
-    SDL_Quit();
-
-    return 0;
+	return 0;
 }

@@ -13,9 +13,11 @@ void	verif_gl_shader_error(t_infos *infos, GLuint shader)
 	if ((str = (char *)malloc(sizeof(char) * size)) != NULL)
 	{
 		glGetShaderInfoLog(shader, size, &size, str);
-		printf("%s\n", str);
+		printf("Shader compilation error: %s\n", str);
 		free(str);
 	}
+	else
+		printf("Shader compilation error: No error(log length=%d)\n", result);
 	quit_prog(infos);
 }
 
@@ -32,9 +34,11 @@ void	verif_gl_program_error(t_infos *infos, GLuint program)
 	if ((str = (char *)malloc(sizeof(char) * size)) != NULL)
 	{
 		glGetProgramInfoLog(program, size, &size, str);
-		printf("%s\n", str);
+		printf("Program compilation error: %s\n", str);
 		free(str);
 	}
+	else
+		printf("Program compilation error: No error(log length=%d)\n", result);
 	quit_prog(infos);
 }
 
@@ -65,6 +69,7 @@ void	create_program(t_infos *infos)
 	char	*src;
 
 	infos->fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+	printf("%s\n", (glIsShader(infos->fragment_shader) == GL_TRUE ? "Is a shader" : "Not a shader"));
 	src = read_shader(infos, "./shaders/fragment_shader.glsl");
 	glShaderSource(infos->fragment_shader, 1, (const GLchar **)&src, NULL);
 	free(src);

@@ -1,9 +1,13 @@
 #ifndef __SCOP_H__
 #define __SCOP_H__
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
-#include <glad/glad.h>
+#ifdef WIN32
+# include <glad/glad.h>
+#else
+#include <OpenGL/gl3.h>
+#endif
 #include <stdbool.h>
 #include <stdlib.h>
 #include <math.h>
