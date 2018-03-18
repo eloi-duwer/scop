@@ -9,7 +9,7 @@ void	init_sdl_opengl(t_infos *infos)
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     infos->window = SDL_CreateWindow("Test scope", SDL_WINDOWPOS_UNDEFINED, \
-		SDL_WINDOWPOS_UNDEFINED, 1080, 590, SDL_WINDOW_OPENGL);
+		SDL_WINDOWPOS_UNDEFINED, 590, 590, SDL_WINDOW_OPENGL);
     infos->glcontext = SDL_GL_CreateContext(infos->window);
 	gladLoadGLLoader(SDL_GL_GetProcAddress);
 	SDL_GL_SetSwapInterval(1);
@@ -25,24 +25,24 @@ void	setup_objects(t_infos *infos)
 	0.0f,  1.0f, 0.0f,
 	};
 
-	GLfloat losange[4][2] = {
-    {  1.0,  0.0  }, /* Right point */
-    {  0.0,  1.0  }, /* Top point */
-    {  0.0, -1.0  }, /* Bottom point */
-    { -1.0,  0.0  } }; /* Left point */
+	GLfloat square[4][3] = {
+    { 10.0, 20.0, -20.0},
+    { 20.0, 20.0, -20.0},
+    { 20.0, 10.0, -20.0},
+    { 10.0, 10.0, -20.0} };
 
     GLfloat colors[4][3] = {
-    {  0.0,  1.0,  0.0  }, /* Green */
-    {  1.0,  0.0,  0.0  }, /* Red */
-    {  0.0,  0.0,  1.0  }, /* Blue */
-    {  1.0,  1.0,  1.0  } }; /* White */
+    {  1.0,  0.0,  0.0  },
+    {  0.0,  0.0,  1.0  },
+    {  0.0,  1.0,  0.0  },
+    {  1.0,  0.0,  0.0  } };
 
 	glGenVertexArrays(1, &(infos->vertex_array_id));
 	glBindVertexArray(infos->vertex_array_id);
-	glGenBuffers(2, &(infos->vertexbuffers));
+	glGenBuffers(2, infos->vertexbuffers);
 	glBindBuffer(GL_ARRAY_BUFFER, infos->vertexbuffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(losange), \
-		losange, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(square), \
+		square, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(
 		0,
@@ -64,5 +64,3 @@ void	setup_objects(t_infos *infos)
 		(void*)0
 	);
 }
-
-

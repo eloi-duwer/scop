@@ -1,5 +1,25 @@
 #include <scop.h>
 
+void	print_mat(float *mat)
+{
+	int i;
+	int j;
+
+	i = 0;
+	printf("Going to print matrix:\n");
+	while (i < 4)
+	{
+		j = 0;
+		while (j < 4)
+		{
+			printf("%.2f, ", mat[i + j * 4]);
+			++j;
+		}
+		printf("\n");
+		++i;
+	}
+}
+
 void	quit_prog(t_infos *infos)
 {
 	SDL_DestroyWindow(infos->window);
@@ -26,12 +46,21 @@ void	test_event(t_infos *infos)
 
 void	main_loop(t_infos *infos)
 {
+	float			matrix[16];
+	GLuint			mat_id;
+	t_projection	projection;
+
+	mat_id = glGetUniformLocation(infos->program, "projection");
+	init_identity_matrix(matrix);
+	init_projection_infos(infos, &projection);
 	while (true)
 	{
 		while (SDL_PollEvent(&(infos->event)))
 			test_event(infos);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glUniformMatrix4fv(mat_id, 1, GL_FALSE, projection.projection_matrix);
+		rotation_matrix_Z(matrix, 0.01);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		//glDrawArrays(GL_TRIANGLES, 1, 3);
 		glFlush();
 		SDL_GL_SwapWindow(infos->window);
 	}
