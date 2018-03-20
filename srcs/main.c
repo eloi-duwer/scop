@@ -47,20 +47,27 @@ void	test_event(t_infos *infos)
 void	main_loop(t_infos *infos)
 {
 	float			matrix[16];
-	GLuint			mat_id;
 	t_projection	projection;
 
-	mat_id = glGetUniformLocation(infos->program, "projection");
+	infos->mat_proj_id = glGetUniformLocation(infos->program, "projection");
+	infos->mat_rot_id = glGetUniformLocation(infos->program, "rotation");
+	infos->deplacement_id = glGetUniformLocation(infos->program, "deplacement");
 	init_identity_matrix(matrix);
 	init_projection_infos(infos, &projection);
+	glUniform3f(infos->deplacement_id, 0.0, 0.0, -5.0);
+	glPatchParameteri(GL_PATCH_VERTICES, 4);
 	while (true)
 	{
 		while (SDL_PollEvent(&(infos->event)))
 			test_event(infos);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glUniformMatrix4fv(mat_id, 1, GL_FALSE, matrix);
-		rotation_matrix_Z(matrix, 0.01);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glUniformMatrix4fv(infos->mat_proj_id, 1, GL_FALSE, projection.projection_matrix);
+		glUniformMatrix4fv(infos->mat_rot_id, 1, GL_FALSE, matrix);
+		rotation_matrix_Y(matrix, 0.01);
+			rotation_matrix_X(matrix, 0.01);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
+		glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 		glFlush();
 		SDL_GL_SwapWindow(infos->window);
 	}

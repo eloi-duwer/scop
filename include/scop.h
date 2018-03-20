@@ -1,12 +1,14 @@
 #ifndef __SCOP_H__
 #define __SCOP_H__
 
-#include <SDL.h>
+
 #include <stdio.h>
 #ifdef WIN32
 # include <glad/glad.h>
+# include <SDL2/SDL.h>
 #else
-#include <OpenGL/gl3.h>
+# include <SDL.h>
+# include <OpenGL/gl3.h>
 #endif
 #include <stdbool.h>
 #include <stdlib.h>
@@ -21,6 +23,9 @@ typedef struct		s_infos {
 	GLuint			fragment_shader;
 	GLuint			vertex_shader;
 	GLuint			program;
+	GLuint			mat_proj_id;
+	GLuint			mat_rot_id;
+	GLuint			deplacement_id;
 }					t_infos;
 
 typedef struct		s_projection {
@@ -49,5 +54,6 @@ void	multMatrix(float *mat1, float *mat2, float *res);
 void	setProjectionMatrix(float fov, float near_plan, float far_plan, \
 			float *matrix);
 void	init_projection_infos(t_infos *infos, t_projection *projection);
+void	translation_matrix(float *mat, float x, float y, float z);
 
 #endif
