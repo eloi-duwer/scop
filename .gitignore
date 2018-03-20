@@ -3,4 +3,6 @@ scope*
 SDL2_win
 obj
 bin
-glad/libglad.a
+glad
+SDL2-2.0.7
+Makefile

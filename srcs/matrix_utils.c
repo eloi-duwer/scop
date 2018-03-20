@@ -1,30 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   matrix_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eduwer <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/03/20 15:50:29 by eduwer            #+#    #+#             */
+/*   Updated: 2018/03/20 16:08:30 by eduwer           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <scop.h>
 
-void	setProjectionMatrix(float fov, float near_plan, float far_plan, \
-			float *matrix)
-{
-	float temp;
-
-	temp = 1.0 / (float)tan((fov / 2) * (M_PI / 180));
-	matrix[0] = temp;
-	matrix[1] = 0;
-	matrix[2] = 0;
-	matrix[3] = 0;
-	matrix[4] = 0;
-	matrix[5] = temp;
-	matrix[6] = 0;
-	matrix[7] = 0;
-	matrix[8] = 0;
-	matrix[9] = 0;
-	matrix[10] = -far_plan / (far_plan - near_plan);
-	matrix[11] = -(far_plan * near_plan) / (far_plan - near_plan);
-	matrix[12] = 0;
-	matrix[13] = 0;
-	matrix[14] = -1;
-	matrix[15] = 0;
-}
-
-void	multMatrix(float *mat1, float *mat2, float *res)
+void	mult_matrix(float *mat1, float *mat2, float *res)
 {
 	int i;
 	int j;
@@ -65,9 +53,9 @@ void	init_identity_matrix(float *mat)
 
 void	init_projection_infos(t_infos *infos, t_projection *projection)
 {
-	float scale;
-	int w;
-	int h;
+	float	scale;
+	int		w;
+	int		h;
 
 	SDL_GL_GetDrawableSize(infos->window, &w, &h);
 	projection->angle_of_view = 90;
@@ -89,8 +77,8 @@ void	init_projection_infos(t_infos *infos, t_projection *projection)
 		/ (projection->right - projection->left);
 	projection->projection_matrix[9] = (projection->top + projection->down) \
 		/ (projection->top - projection->down);
-	projection->projection_matrix[10] = -(projection->far_clip + projection->near_clip) \
-		/ (projection->far_clip - projection->near_clip);
+	projection->projection_matrix[10] = -(projection->far_clip + \
+		projection->near_clip) / (projection->far_clip - projection->near_clip);
 	projection->projection_matrix[11] = -1.0;
 	projection->projection_matrix[14] = -2 * projection->far_clip * \
 		projection->near_clip / (projection->far_clip - projection->near_clip);

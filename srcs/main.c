@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eduwer <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/03/20 15:50:13 by eduwer            #+#    #+#             */
+/*   Updated: 2018/03/20 16:36:29 by eduwer           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <scop.h>
 
 void	print_mat(float *mat)
@@ -42,18 +54,24 @@ void	test_event(t_infos *infos)
 		handlekeyboarddown(infos);
 	else if (event_type == SDL_QUIT)
 		quit_prog(infos);
+	else if (event_type == SDL_MOUSEMOTION)
+	{
+		rotation_matrix_y(infos->proj.rotation_matrix, \
+			(float)(infos->event.motion.xrel) * 0.01);
+		rotation_matrix_x(infos->proj.rotation_matrix, \
+			(float)(infos->event.motion.yrel) * 0.01);
+	}
 }
 
 void	main_loop(t_infos *infos)
 {
-	float			matrix[16];
-	t_projection	projection;
+	int	i;
 
 	infos->mat_proj_id = glGetUniformLocation(infos->program, "projection");
 	infos->mat_rot_id = glGetUniformLocation(infos->program, "rotation");
 	infos->deplacement_id = glGetUniformLocation(infos->program, "deplacement");
-	init_identity_matrix(matrix);
-	init_projection_infos(infos, &projection);
+	init_identity_matrix(infos->proj.rotation_matrix);
+	init_projection_infos(infos, &infos->proj);
 	glUniform3f(infos->deplacement_id, 0.0, 0.0, -5.0);
 	glPatchParameteri(GL_PATCH_VERTICES, 4);
 	while (true)
@@ -61,13 +79,11 @@ void	main_loop(t_infos *infos)
 		while (SDL_PollEvent(&(infos->event)))
 			test_event(infos);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUniformMatrix4fv(infos->mat_proj_id, 1, GL_FALSE, projection.projection_matrix);
-		glUniformMatrix4fv(infos->mat_rot_id, 1, GL_FALSE, matrix);
-		rotation_matrix_Y(matrix, 0.01);
-			rotation_matrix_X(matrix, 0.01);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
-		glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
+		glUniformMatrix4fv(infos->mat_proj_id, 1, GL_FALSE, infos->proj.projection_matrix);
+		glUniformMatrix4fv(infos->mat_rot_id, 1, GL_FALSE, infos->proj.rotation_matrix);
+		i = 0;
+		while (i < 6)
+			glDrawArrays(GL_TRIANGLE_STRIP, i++ * 4, 4);
 		glFlush();
 		SDL_GL_SwapWindow(infos->window);
 	}
@@ -80,5 +96,5 @@ int		main(int argc, char *argv[])
 	init_sdl_opengl(&infos);
 	setup_objects(&infos);
 	main_loop(&infos);
-	return 0;
+	return (0);
 }

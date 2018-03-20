@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rotation_matrix.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eduwer <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/03/20 15:50:34 by eduwer            #+#    #+#             */
+/*   Updated: 2018/03/20 15:56:00 by eduwer           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <scop.h>
 
-void	rotation_matrix_X(float *mat, float angle)
+void	rotation_matrix_x(float *mat, float angle)
 {
 	float	rot[16];
 	float	res[16];
@@ -21,11 +33,11 @@ void	rotation_matrix_X(float *mat, float angle)
 	rot[13] = 0;
 	rot[14] = 0;
 	rot[15] = 1;
-	multMatrix(rot, mat, res);
+	mult_matrix(rot, mat, res);
 	memcpy(mat, res, sizeof(float) * 16);
 }
 
-void	rotation_matrix_Y(float *mat, float angle)
+void	rotation_matrix_y(float *mat, float angle)
 {
 	float	rot[16];
 	float	res[16];
@@ -46,11 +58,11 @@ void	rotation_matrix_Y(float *mat, float angle)
 	rot[13] = 0;
 	rot[14] = 0;
 	rot[15] = 1;
-	multMatrix(rot, mat, res);
+	mult_matrix(rot, mat, res);
 	memcpy(mat, res, sizeof(float) * 16);
 }
 
-void	rotation_matrix_Z(float *mat, float angle)
+void	rotation_matrix_z(float *mat, float angle)
 {
 	float	rot[16];
 	float	res[16];
@@ -71,6 +83,6 @@ void	rotation_matrix_Z(float *mat, float angle)
 	rot[13] = 0;
 	rot[14] = 0;
 	rot[15] = 1;
-	multMatrix(mat, rot, res);
+	mult_matrix(mat, rot, res);
 	memcpy(mat, res, sizeof(float) * 16);
 }

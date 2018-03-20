@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   load_shaders.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eduwer <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/03/20 15:49:55 by eduwer            #+#    #+#             */
+/*   Updated: 2018/03/20 16:00:13 by eduwer           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <scop.h>
 
 void	verif_gl_shader_error(t_infos *infos, GLuint shader)
@@ -8,7 +20,7 @@ void	verif_gl_shader_error(t_infos *infos, GLuint shader)
 
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
 	if (result == GL_TRUE)
-		return;
+		return ;
 	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &size);
 	if ((str = (char *)malloc(sizeof(char) * size)) != NULL)
 	{
@@ -29,7 +41,7 @@ void	verif_gl_program_error(t_infos *infos, GLuint program)
 
 	glGetProgramiv(program, GL_LINK_STATUS, &result);
 	if (result == GL_TRUE)
-		return;
+		return ;
 	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &size);
 	if ((str = (char *)malloc(sizeof(char) * size)) != NULL)
 	{
@@ -61,7 +73,7 @@ char	*read_shader(t_infos *infos, char *file_name)
 	rewind(file);
 	fread(src, sizeof(char), size, file);
 	fclose(file);
-	return(src);
+	return (src);
 }
 
 void	create_program(t_infos *infos)
@@ -69,7 +81,6 @@ void	create_program(t_infos *infos)
 	char	*src;
 
 	infos->fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	printf("%s\n", (glIsShader(infos->fragment_shader) == GL_TRUE ? "Is a shader" : "Not a shader"));
 	src = read_shader(infos, "./shaders/fragment_shader.glsl");
 	glShaderSource(infos->fragment_shader, 1, (const GLchar **)&src, NULL);
 	free(src);
