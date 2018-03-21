@@ -36,28 +36,56 @@ void	init_sdl_opengl(t_infos *infos)
 
 void	setup_objects(t_infos *infos)
 {
-	GLfloat square[][3] = {
-	{-1.0, 1.0, -1.0}, /* Back */
+	GLfloat cube[][3] = {
+	{1.0, 1.0, 1.0},
+	{1.0, 1.0, -1.0},
+	{1.0, -1.0, 1.0},
+	{1.0, -1.0, -1.0},
+	{-1.0, 1.0, 1.0},
+	{-1.0, 1.0, -1.0},
+	{-1.0, -1.0, 1.0},
+	{-1.0, -1.0, -1.0}};
+
+	GLushort cube_indices[][4] = {
+	{4, 5, 6, 7}, //Left
+	{0, 1, 2, 3}, //Right
+	{0, 1, 4, 5}, //Top
+	{0, 2, 4, 6}, //Back
+	{2, 3, 6, 7}, //Bottom
+	{1, 3, 5, 7}}; //Front
+
+	GLfloat cube_colors[][3] = {
+	{1.0, 1.0, 1.0},
+	{1.0, 1.0, 0.0},
+	{1.0, 0.0, 1.0},
+	{1.0, 0.0, 0.0},
+	{0.0, 1.0, 1.0},
+	{0.0, 1.0, 0.0},
+	{0.0, 0.0, 1.0},
+	{0.0, 0.0, 0.0}};
+
+	/*GLfloat square[][3] = {
+	{-1.0, 1.0, -1.0}, //Back
 	{1.0, 1.0, -1.0},
 	{-1.0, -1.0, -1.0},
 	{1.0, -1.0, -1.0},
-	{-1.0, 1.0, -1.0}, /* Left */
+	{-1.0, 1.0, -1.0}, // Left
 	{-1.0, -1.0, -1.0},
 	{-1.0, 1.0, 1.0},
 	{-1.0, -1.0, 1.0},
-	{1.0, 1.0, 1.0}, /* Top */
+	{1.0, 1.0, 1.0}, // Top
 	{-1.0, 1.0, 1.0},
 	{1.0, 1.0, -1.0},
 	{-1.0, 1.0, -1.0},
-	{1.0, -1.0, 1.0}, /* Bottom */
+	{1.0, -1.0, 1.0}, // Bottom
 	{-1.0, -1.0, 1.0},
 	{1.0, -1.0, -1.0},
 	{-1.0, -1.0, -1.0},
-	{1.0, 1.0, 1.0}, /* Right */
+	{1.0, 1.0, 1.0}, // Right
 	{1.0, -1.0, 1.0},
 	{1.0, 1.0, -1.0},
 	{1.0, -1.0, -1.0},
-	{1.0, 1.0, 1.0}, /* Front */
+	{1.0, 1.0, 1.0}, // Front
 	{-1.0, 1.0, 1.0},
 	{1.0, -1.0, 1.0},
 	{-1.0, -1.0, 1.0}};
@@ -85,18 +113,22 @@ void	setup_objects(t_infos *infos)
 	{1.0, 0.0, 1.0},
 	{1.0, 0.0, 1.0},
 	{1.0, 0.0, 1.0},
-	{1.0, 0.0, 1.0}};
+	{1.0, 0.0, 1.0}};*/
 
 	glGenVertexArrays(1, &(infos->vertex_array_id));
 	glBindVertexArray(infos->vertex_array_id);
 	glGenBuffers(2, infos->vertexbuffers);
 	glBindBuffer(GL_ARRAY_BUFFER, infos->vertexbuffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(square), \
-		square, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 	glBindBuffer(GL_ARRAY_BUFFER, infos->vertexbuffers[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cube_colors), cube_colors, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+
+	GLuint indexes;
+	glGenBuffers(1, &indexes);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexes);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cube_indices), cube_indices, GL_STATIC_DRAW);
 }

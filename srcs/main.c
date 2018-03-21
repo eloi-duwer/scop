@@ -73,7 +73,6 @@ void	main_loop(t_infos *infos)
 	init_identity_matrix(infos->proj.rotation_matrix);
 	init_projection_infos(infos, &infos->proj);
 	glUniform3f(infos->deplacement_id, 0.0, 0.0, -5.0);
-	glPatchParameteri(GL_PATCH_VERTICES, 4);
 	while (true)
 	{
 		while (SDL_PollEvent(&(infos->event)))
@@ -81,9 +80,7 @@ void	main_loop(t_infos *infos)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUniformMatrix4fv(infos->mat_proj_id, 1, GL_FALSE, infos->proj.projection_matrix);
 		glUniformMatrix4fv(infos->mat_rot_id, 1, GL_FALSE, infos->proj.rotation_matrix);
-		i = 0;
-		while (i < 6)
-			glDrawArrays(GL_TRIANGLE_STRIP, i++ * 4, 4);
+		glDrawElements(GL_TRIANGLE_STRIP, 24, GL_UNSIGNED_SHORT, (void *)0);
 		glFlush();
 		SDL_GL_SwapWindow(infos->window);
 	}
