@@ -10,6 +10,6 @@ out	vec3 color;
 
 void main()
 {
-  gl_Position = projection * (rotation * vec4(position, 1.0) + vec4(deplacement, 0));
-   color = in_color;
+	gl_Position = projection * (rotation * vec4(position, 1.0) + vec4(deplacement, 0));
+	color = in_color;
 }

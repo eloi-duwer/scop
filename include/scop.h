@@ -12,7 +12,6 @@
 
 #ifndef SCOP_H
 # define SCOP_H
-# include <stdio.h>
 # ifdef WIN32
 #  include <glad/glad.h>
 #  include <SDL2/SDL.h>
@@ -24,6 +23,16 @@
 # include <stdbool.h>
 # include <stdlib.h>
 # include <math.h>
+# include <libft.h>
+# include <stdio.h>
+# include <fcntl.h>
+# define BUFFER_SIZE 200
+
+typedef struct		s_f_point {
+	float			x;
+	float			y;
+	float			z;
+}					t_f_point;
 
 typedef struct		s_projection {
 	float			top;
@@ -36,7 +45,6 @@ typedef struct		s_projection {
 	float			screen_ratio;
 	float			projection_matrix[16];
 	float			rotation_matrix[16];
-	float			movement[3];
 }					t_projection;
 
 typedef struct		s_infos {
@@ -52,6 +60,12 @@ typedef struct		s_infos {
 	GLuint			mat_rot_id;
 	GLuint			deplacement_id;
 	t_projection	proj;
+	t_f_point		*vertices;
+	int				vertices_size;
+	int				nb_vertices;
+	GLuint			*indexes;
+	int				indexes_size;
+	int				nb_indexes;
 }					t_infos;
 
 void				handlekeyboarddown(t_infos *infos);
@@ -70,5 +84,7 @@ void				set_projection_matrix(float fov, float near_plan, \
 void				init_projection_infos(t_infos *infos, \
 						t_projection *projection);
 void				translation_matrix(float *mat, float x, float y, float z);
+void				parse_file(t_infos *infos, int ac, char **arg);
+void				free_string_tab(char **str);
 
 #endif
