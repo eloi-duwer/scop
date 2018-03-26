@@ -1,11 +1,16 @@
 #version 330
 
-in	vec3 color;
+uniform sampler2D tex;
+uniform int	color_id;
+in vec2 tex_pos;
 
-out vec4 outputColor;
+out vec3 outputColor;
 
 void main()
 {
-	outputColor = vec4(1.0, 1.0, 1.0, 1.0);
-	//outputColor = vec4(color, 1.0);
+	//outputColor = vec3(texture(tex, tex_pos).rgb);
+	outputColor = vec3(tex_pos, 0.0);
+	/*float nb_colors = 11.0;
+	float buf_color = (1.0 / nb_colors) * float(color_id % int(nb_colors) + 1);
+	outputColor = vec3(buf_color, buf_color, buf_color);*/
 }

@@ -26,7 +26,20 @@
 # include <libft.h>
 # include <stdio.h>
 # include <fcntl.h>
-# define BUFFER_SIZE 200
+# include <math.h>
+# define BUFFER_SIZE 500
+
+# if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#  define RMASK 0xff000000;
+#  define GMASK 0x00ff0000;
+#  define BMASK 0x0000ff00;
+#  define AMASK 0x000000ff;
+# else
+#  define RMASK 0x000000ff;
+#  define GMASK 0x0000ff00;
+#  define BMASK 0x00ff0000;
+#  define AMASK 0xff000000;
+# endif
 
 typedef struct		s_f_point {
 	float			x;
@@ -51,14 +64,17 @@ typedef struct		s_infos {
 	SDL_Window		*window;
 	SDL_Event		event;
 	SDL_GLContext	glcontext;
-	GLuint			vertex_array_id;
-	GLuint			vertexbuffers[2];
+	SDL_Surface		*texture;
+	GLuint			tex_id;
 	GLuint			fragment_shader;
 	GLuint			vertex_shader;
 	GLuint			program;
 	GLuint			mat_proj_id;
 	GLuint			mat_rot_id;
 	GLuint			deplacement_id;
+	GLuint			comp_id;
+	GLuint			scale_id;
+	GLuint			color_id;
 	t_projection	proj;
 	t_f_point		*vertices;
 	int				vertices_size;
@@ -66,6 +82,15 @@ typedef struct		s_infos {
 	GLuint			*indexes;
 	int				indexes_size;
 	int				nb_indexes;
+	float			*textures;
+	int				textures_size;
+	int				nb_textures;
+	t_f_point		min_point;
+	t_f_point		max_point;
+	t_f_point		middle_obj_pos;
+	float			scale;
+	bool			mouse_control;
+	float			obj_distance;
 }					t_infos;
 
 void				handlekeyboarddown(t_infos *infos);
@@ -86,5 +111,7 @@ void				init_projection_infos(t_infos *infos, \
 void				translation_matrix(float *mat, float x, float y, float z);
 void				parse_file(t_infos *infos, int ac, char **arg);
 void				free_string_tab(char **str);
+void				test_event(t_infos *infos);
+void				init_struct(t_infos *infos);
 
 #endif

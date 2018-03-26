@@ -98,4 +98,10 @@ void	create_program(t_infos *infos)
 	glLinkProgram(infos->program);
 	verif_gl_program_error(infos, infos->program);
 	glUseProgram(infos->program);
+	infos->mat_proj_id = glGetUniformLocation(infos->program, "projection");
+	infos->mat_rot_id = glGetUniformLocation(infos->program, "rotation");
+	infos->deplacement_id = glGetUniformLocation(infos->program, "deplacement");
+	infos->comp_id = glGetUniformLocation(infos->program, "compensation_pos");
+	infos->scale_id = glGetUniformLocation(infos->program, "scale");
+	infos->color_id = glGetUniformLocation(infos->program, "color_id");
 }

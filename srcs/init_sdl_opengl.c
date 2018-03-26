@@ -30,36 +30,69 @@ void	init_sdl_opengl(t_infos *infos)
 #endif
 	SDL_GL_SetSwapInterval(1);
 	glEnable(GL_DEPTH_TEST);
-	SDL_SetRelativeMouseMode(1);
 	create_program(infos);
+
+	//TEST DU LOAD DES TEXTURES AVEC SDL
+	infos->texture = SDL_LoadBMP("./textures/uvtemplate.bmp");
+	glGenTextures(1, &infos->tex_id);
+	glBindTexture(GL_TEXTURE_2D, infos->tex_id);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    SDL_PixelFormat format = *(infos->texture->format);
+    format.BitsPerPixel = 32;
+    format.BytesPerPixel = 4;
+    format.Rmask = RMASK;
+    format.Gmask = GMASK;
+    format.Bmask = BMASK;
+    format.Amask = AMASK;
+    SDL_Surface *converted = SDL_ConvertSurface(infos->texture, &format, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, converted->w, converted->h, 0, \
+		GL_RGBA, GL_UNSIGNED_BYTE, converted->pixels);
+	SDL_FreeSurface(converted);
 }
 
 void	setup_objects(t_infos *infos)
 {
-	GLfloat cube_colors[][3] = {
-	{1.0, 1.0, 1.0},
-	{1.0, 1.0, 0.0},
-	{1.0, 0.0, 1.0},
-	{1.0, 0.0, 0.0},
-	{0.0, 1.0, 1.0},
-	{0.0, 1.0, 0.0},
-	{0.0, 0.0, 1.0},
-	{0.0, 0.0, 0.0}};
+	GLuint	vertexbuffers[2];
+	GLuint	vertex_array;
 
-	glGenVertexArrays(1, &(infos->vertex_array_id));
-	glBindVertexArray(infos->vertex_array_id);
-	glGenBuffers(2, infos->vertexbuffers);
-	glBindBuffer(GL_ARRAY_BUFFER, infos->vertexbuffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, infos->nb_vertices * sizeof(t_f_point)/*sizeof(cube)*/, /*cube*/infos->vertices, GL_DYNAMIC_DRAW);
+	glGenVertexArrays(1, &vertex_array);
+	glBindVertexArray(vertex_array);
+	glGenBuffers(2, vertexbuffers);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffers[0]);
+	glBufferData(GL_ARRAY_BUFFER, infos->nb_vertices * sizeof(t_f_point), infos->vertices, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-	glBindBuffer(GL_ARRAY_BUFFER, infos->vertexbuffers[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(cube_colors), cube_colors, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexbuffers[1]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, infos->nb_indexes * sizeof(GLuint), infos->indexes, GL_STATIC_DRAW);
+}
 
-	GLuint indexes;
-	glGenBuffers(1, &indexes);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexes);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, infos->nb_indexes * sizeof(GLuint)/*sizeof(cube_indices)*/, /*cube_indices*/infos->indexes, GL_STATIC_DRAW);
+void	init_struct(t_infos *infos)
+{
+	infos->window = NULL;
+	infos->vertices = NULL;
+	infos->indexes = NULL;
+	if (!(infos->vertices = \
+		(t_f_point *)malloc(BUFFER_SIZE * sizeof(t_f_point))))
+		print_error(infos, "Malloc returned null");
+	infos->vertices_size = BUFFER_SIZE;
+	infos->nb_vertices = 0;
+	if (!(infos->indexes = (GLuint *)malloc(BUFFER_SIZE * sizeof(GLuint))))
+		print_error(infos, "Malloc returned null");
+	infos->indexes_size = BUFFER_SIZE;
+	infos->nb_indexes = 0;
+	if (!(infos->textures = (float *)malloc(BUFFER_SIZE * sizeof(float))))
+		print_error(infos, "Malloc returned null");
+	infos->textures_size = BUFFER_SIZE;
+	infos->nb_textures = 0;
+	ft_bzero(&infos->middle_obj_pos, sizeof(t_f_point));
+	infos->min_point.x = 4242424242.0;
+	infos->min_point.y = 4242424242.0;
+	infos->min_point.z = 4242424242.0;
+	infos->max_point.x = -4242424242.0;
+	infos->max_point.y = -4242424242.0;
+	infos->max_point.z = -4242424242.0;
+	init_identity_matrix(infos->proj.rotation_matrix);
+	infos->mouse_control = false;
+	infos->obj_distance = -7.0;
 }
