@@ -24,6 +24,7 @@ void	main_loop(t_infos *infos)
 	{
 		while (SDL_PollEvent(&(infos->event)))
 			test_event(infos);
+		//glClearColor(1, 1, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUniformMatrix4fv(infos->mat_rot_id, 1, GL_FALSE, infos->proj.rotation_matrix);
 		i = 0;

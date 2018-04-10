@@ -75,6 +75,7 @@ typedef struct		s_infos {
 	GLuint			comp_id;
 	GLuint			scale_id;
 	GLuint			color_id;
+	GLuint			text_cord_id;
 	t_projection	proj;
 	t_f_point		*vertices;
 	int				vertices_size;

@@ -35,9 +35,9 @@ void	init_sdl_opengl(t_infos *infos)
 	//TEST DU LOAD DES TEXTURES AVEC SDL
 	infos->texture = SDL_LoadBMP("./textures/uvtemplate.bmp");
 	glGenTextures(1, &infos->tex_id);
-	glBindTexture(GL_TEXTURE_2D, infos->tex_id);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glBindTexture(GL_TEXTURE_RECTANGLE, infos->tex_id);
+	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_T, GL_REPEAT);
     SDL_PixelFormat format = *(infos->texture->format);
     format.BitsPerPixel = 32;
     format.BytesPerPixel = 4;
@@ -46,7 +46,7 @@ void	init_sdl_opengl(t_infos *infos)
     format.Bmask = BMASK;
     format.Amask = AMASK;
     SDL_Surface *converted = SDL_ConvertSurface(infos->texture, &format, 0);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, converted->w, converted->h, 0, \
+	glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA, converted->w, converted->h, 0, \
 		GL_RGBA, GL_UNSIGNED_BYTE, converted->pixels);
 	SDL_FreeSurface(converted);
 }
@@ -65,6 +65,13 @@ void	setup_objects(t_infos *infos)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexbuffers[1]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, infos->nb_indexes * sizeof(GLuint), infos->indexes, GL_STATIC_DRAW);
+
+	//test textures
+	glGenBuffers(1, &infos->text_cord_id);
+	glBindBuffer(GL_ARRAY_BUFFER, infos->text_cord_id);
+	glBufferData(GL_ARRAY_BUFFER, infos->nb_textures * sizeof(*infos->textures) * 2, infos->textures, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
 void	init_struct(t_infos *infos)
