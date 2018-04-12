@@ -33,7 +33,7 @@ void	init_sdl_opengl(t_infos *infos)
 	create_program(infos);
 
 	//TEST DU LOAD DES TEXTURES AVEC SDL
-	infos->texture = SDL_LoadBMP("./textures/uvtemplate.bmp");
+	infos->texture = SDL_LoadBMP("./textures/unicorn_pattern.bmp");
 	glGenTextures(1, &infos->tex_id);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, infos->tex_id);
