@@ -36,9 +36,11 @@ void	init_sdl_opengl(t_infos *infos)
 	infos->texture = SDL_LoadBMP("./textures/uvtemplate.bmp");
 	glGenTextures(1, &infos->tex_id);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_RECTANGLE, infos->tex_id);
-	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_2D, infos->tex_id);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     SDL_PixelFormat format = *(infos->texture->format);
     format.BitsPerPixel = 32;
     format.BytesPerPixel = 4;
@@ -47,9 +49,9 @@ void	init_sdl_opengl(t_infos *infos)
     format.Bmask = BMASK;
     format.Amask = AMASK;
     SDL_Surface *converted = SDL_ConvertSurface(infos->texture, &format, 0);
-    glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_BASE_LEVEL, 0);
-	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAX_LEVEL, 0);
-	glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA, converted->w, converted->h, 0, \
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, converted->w, converted->h, 0, \
 		GL_RGBA, GL_UNSIGNED_BYTE, converted->pixels);
 	printf("%d\n", glGetError());
 	SDL_FreeSurface(converted);
@@ -71,12 +73,6 @@ void	setup_objects(t_infos *infos)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, infos->nb_indexes * sizeof(GLuint), infos->indexes, GL_STATIC_DRAW);
 
 	//test textures
-
-	int i = 0;
-	while (i < infos->nb_textures) {
-		printf("%f, %f\n", infos->textures[i], infos->textures[i + 1]);
-		i += 2;
-	}
 	glGenBuffers(1, &infos->text_cord_id);
 	glBindBuffer(GL_ARRAY_BUFFER, infos->text_cord_id);
 	glBufferData(GL_ARRAY_BUFFER, infos->nb_textures * sizeof(*infos->textures) * 2, infos->textures, GL_STATIC_DRAW);
