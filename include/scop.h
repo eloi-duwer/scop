@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   scop.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eduwer <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/20 15:49:30 by eduwer            #+#    #+#             */
-/*   Updated: 2018/03/20 16:12:40 by eduwer           ###   ########.fr       */
+/*   Updated: 2020/01/31 12:38:41 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SCOP_H
 # define SCOP_H
+# define GL_SILENCE_DEPRECATION
 # ifdef WIN32
 #  include <glad/glad.h>
 #  include <SDL2/SDL.h>
