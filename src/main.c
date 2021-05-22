@@ -39,6 +39,7 @@ static gboolean realize_gl_area(GtkGLArea *gl_area, t_context *ctx)
 {
 	gtk_gl_area_make_current(gl_area);
 	gtk_gl_area_set_has_depth_buffer(gl_area, TRUE);
+	load_opengl_funcs();
 	//gtk_gl_area_set_has_alpha(gl_area, TRUE);
 	GdkGLContext *gl_context = gtk_gl_area_get_context(gl_area);
 	GdkWindow *gl_window = gdk_gl_context_get_window(gl_context);

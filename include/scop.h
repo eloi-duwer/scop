@@ -2,15 +2,16 @@
 # define __SCOP_H__
 # include <gtk/gtk.h>
 # define GL3_PROTOTYPES 1
-# include <GL/glew.h>
+//# include <GL/glew.h>
 # include <stdio.h>
-#define _USE_MATH_DEFINES
-# include <math.h>
+# include <gl_init.h>
 # include <libftprintf.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <time.h>
+#define _USE_MATH_DEFINES
+# include <math.h>
 # define BUFF_SIZE 1000
 # define DISPLAY_FACES 0
 # define DISPLAY_TEXTURES 1

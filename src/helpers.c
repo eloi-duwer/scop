@@ -22,8 +22,6 @@ void	init_opengl(t_context *ctx)
 {
 	int	fd;
 
-	glewExperimental = GL_TRUE;
-	glewInit();
 	create_program(ctx);
 	ctx->mvp = glGetUniformLocation(ctx->prog, "model_view_projection_mat");
 	ctx->frames = glGetUniformLocation(ctx->prog, "frames");

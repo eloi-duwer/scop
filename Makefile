@@ -1,13 +1,14 @@
-SRC_NAME = main.c\
-	helpers.c\
-	load_shaders.c\
-	matrix/matrix.c\
-	matrix/matrix_operations.c\
-	matrix/rotation_matrix.c\
-	print_funcs.c\
-	open_file.c\
-	event_handling.c\
-	load_bmp.c
+SRC_NAME = main.c \
+	helpers.c \
+	load_shaders.c \
+	matrix/matrix.c \
+	matrix/matrix_operations.c \
+	matrix/rotation_matrix.c \
+	print_funcs.c \
+	open_file.c \
+	event_handling.c \
+	load_bmp.c \
+	load_opengl_funcs.c \
 
 NAME = scop
 
@@ -26,7 +27,7 @@ LFT = libft/libft.a
 all: $(NAME)
 
 $(NAME): $(LFT) $(OBJS)
-	$(CC) -o $(NAME) $(OBJS) -g `pkg-config --libs gtk+-3.0` -lGLEW -lGLU -lGL -lm -lpthread -L./libft -lft
+	$(CC) -o $(NAME) $(OBJS) -g `pkg-config --libs gtk+-3.0` -lGL -lm -lpthread -L./libft -lft -ldl
 
 $(LFT):
 	make -C ./libft
