@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:46 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/22 17:21:48 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/23 14:46:14 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,8 +179,8 @@ void	load_obj_into_opengl(t_context *ctx, t_object *obj)
 
 static void	set_inital_object_size_and_pos(t_context *ctx, t_object *obj)
 {
-	double	scale;
-	int		i;
+	double		scale;
+	uint64_t	i;
 
 	scale = 2 / fmax(fmax(obj->max_coords.x - \
 		obj->min_coords.x, obj->max_coords.y - obj->min_coords.y), \
@@ -189,12 +189,13 @@ static void	set_inital_object_size_and_pos(t_context *ctx, t_object *obj)
 	obj->center.x /= obj->nb_vertexes;
 	obj->center.y /= obj->nb_vertexes;
 	obj->center.z /= obj->nb_vertexes;
-	i = -1;
-	while (++i < obj->nb_vertexes)
+	i = 0;
+	while (i < obj->nb_vertexes)
 	{
 		obj->vertexes[i].x -= obj->center.x;
 		obj->vertexes[i].y -= obj->center.y;
 		obj->vertexes[i].z -= obj->center.z;
+		i++;
 	}
 	glUniform3f(ctx->center, obj->center.x, obj->center.y, obj->center.z);
 	printf("min coord:\n");
@@ -224,17 +225,20 @@ void	load_file(t_context *ctx, int fd)
 		print_error(ctx, "Error occured while parsing the file\n");
 	free(line);
 	set_inital_object_size_and_pos(ctx, &ctx->objects[0]);
-	printf("nb vertexes: %d\n", ctx->objects[0].nb_vertexes);
-	printf("nb faces: %d\n", ctx->objects[0].nb_faces);
+	printf("nb vertexes: %lu\n", ctx->objects[0].nb_vertexes);
+	printf("nb faces: %lu\n", ctx->objects[0].nb_faces);
 	//print_face_coords(ctx->objects);
 
-	int i = -1;
-	while (++i < ctx->objects[0].nb_faces) {
-		if (ctx->objects[0].faces[i].points[2] > (unsigned int)ctx->objects[0].nb_vertexes) {
-			printf("ERROR FOUND, FACE INDEX %u %u %u\n", ctx->objects[0].faces[i].points[0], ctx->objects[0].faces[i].points[1], ctx->objects[0].faces[i].points[2]);
+	uint64_t i = 0;
+	while (i < ctx->objects[0].nb_faces) {
+		if (ctx->objects[0].faces[i].points[2] > ctx->objects[0].nb_vertexes) {
+			printf("Error found, Face index %lu %lu %lu, nb vertexes = %lu\n", ctx->objects[0].faces[i].points[0], ctx->objects[0].faces[i].points[1], ctx->objects[0].faces[i].points[2], ctx->objects[0].nb_vertexes);
 		}
+		i++;
 	}
-
 	load_obj_into_opengl(ctx, &ctx->objects[0]);
-	load_bmp_into_opengl(ctx, "./textures/unicorn_pattern.bmp");
+	if (ctx->text_name != NULL)
+		load_bmp_into_opengl(ctx, ctx->text_name);
+	else
+		load_bmp_into_opengl(ctx, "./textures/unicorn_pattern.bmp");
 }

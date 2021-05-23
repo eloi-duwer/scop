@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:21 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/22 17:21:22 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/23 13:34:54 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ gboolean	mouse_motion(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 	{
 		rotation_around_axis_vec(&ctx->cam.pos, &ctx->cam.norm_vec, 0.01 * (e->y - ctx->prev_pos_y));
 		ctx->cam.total_angle += 0.01 * (e->y - ctx->prev_pos_y);
-		//printf("AVANT %f\n", to_deg(ctx->cam.total_angle));
 		if (ctx->cam.total_angle > M_PI / 2)
 		{
 			ctx->cam.up_vec.y = -ctx->cam.up_vec.y;
@@ -95,7 +94,6 @@ gboolean	mouse_motion(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 			ctx->cam.up_vec.y = -ctx->cam.up_vec.y;
 			ctx->cam.total_angle += M_PI;
 		}
-		//printf("APRES %f\n", to_deg(ctx->cam.total_angle));
 		rotation_vec_y(&ctx->cam.pos, -0.01 * (e->x - ctx->prev_pos_x));
 		rotation_vec_y(&ctx->cam.norm_vec, -0.01 * (e->x - ctx->prev_pos_x));
 		init_view_matrix(&ctx->cam.pos, &ctx->cam.look_at, &ctx->cam.up_vec, &ctx->cam.view_matrix);

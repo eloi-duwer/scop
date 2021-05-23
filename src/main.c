@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:15 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/23 13:05:49 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/23 14:37:16 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,25 @@ static void on_app_activate(GApplication *app, t_context *ctx)
 	gtk_widget_show_all(GTK_WIDGET(window));
 }
 
+static int	print_help(void)
+{
+	ft_fdprintf(2, "Usage: ./scop [object file] [texture file]\n\n\
+Controls once the object is loaded:\n\
+i, j, k, l, u, o : Move the camera Up, Left, Down, Right, Backward, Forward respectively\n\
+Scroll whell / + and - : zoom / unzoom\n\
+Left click : Stop the object rotation and Rotate the camera manually\n\
+Space: Apply the texture\n");
+	return (0);
+}
+
 int main(int argc, char **argv)
 {
 	t_context		ctx;
 	GtkApplication	*app;
 	int				exit_status;
 
+	if (argc == 2 && ft_strcmp(argv[1], "-h") == 0)
+		return (print_help());
 	load_opengl_funcs();
 	app = gtk_application_new("fr.eduwer.scop", G_APPLICATION_FLAGS_NONE);
 	ctx.app = app;

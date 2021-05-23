@@ -18,12 +18,14 @@ out	vec2 uv_coords;
 */
 void automatic_uv_calc()
 {
-	vec3 centered_pos = vertex - center;
+	/*vec3 centered_pos = vertex - center;
 	
 	float angle1 = atan(-(centered_pos.z), centered_pos.x);
 	float angle2 = acos(-(centered_pos.y) / distance(center, vertex));
 
-	uv_coords = vec2((angle1 + M_PI) / (2 * M_PI), angle2 / M_PI);
+	uv_coords = vec2((angle1 + M_PI) / (2 * M_PI), angle2 / M_PI);*/
+
+	uv_coords = vec2(vertex.y, vertex.z);
 }
 
 void main() {

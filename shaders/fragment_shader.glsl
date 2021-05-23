@@ -37,8 +37,6 @@ vec3 get_texture_color()
 }
 
 void main() {
-
-	//color = get_rainbow_color() * get_automatic_face_color_grey();
 	if (display_percent <= 0)
 		color = vec3(get_automatic_face_color_grey());
 	else if (display_percent >= 1)

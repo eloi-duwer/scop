@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:51 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/22 17:21:52 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/23 14:38:35 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,26 +25,27 @@ void	print_face_indexes(t_triangle *faces, int nb_faces)
 	printf("faces (%p)\n", faces);
 	while (++i < nb_faces)
 	{
-		printf("\t%d %d %d\n", faces[i].points[0], faces[i].points[1], \
+		printf("\t%lu %lu %lu\n", faces[i].points[0], faces[i].points[1], \
 			faces[i].points[2]);
 	}
 }
 
 void	print_face_coords(t_object *obj)
 {
-	int	i;
+	uint64_t	i;
 
 	printf("faces coords (obj %p)\n", obj);
-	i = -1;
-	while (++i < obj->nb_faces)
+	i = 0;
+	while (i < obj->nb_faces)
 	{
-		printf("Face %d:\n", i);
+		printf("Face %lu:\n", i);
 		printf("\t");
 		print_vec(&obj->vertexes[obj->faces[i].points[0]]);
 		printf("\t");
 		print_vec(&obj->vertexes[obj->faces[i].points[1]]);
 		printf("\t");
 		print_vec(&obj->vertexes[obj->faces[i].points[2]]);
+		i++;
 	}
 }
 

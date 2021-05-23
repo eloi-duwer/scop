@@ -27,15 +27,15 @@ typedef struct	s_vec3 {
 }				t_vec3;
 
 typedef struct	s_triangle {
-	unsigned int	points[3];
+	uint64_t	points[3];
 }				t_triangle;
 
 typedef struct	s_object {
-	int			nb_faces;
-	int			size_faces;
+	uint64_t	nb_faces;
+	uint64_t	size_faces;
 	t_triangle	*faces;
-	int			nb_vertexes;
-	int			size_vertexes;
+	uint64_t	nb_vertexes;
+	uint64_t	size_vertexes;
 	t_vec3		*vertexes;
 	t_vec3		center;
 	t_vec3		world_position;
