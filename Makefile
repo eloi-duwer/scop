@@ -43,3 +43,6 @@ fclean: clean
 	rm -rf $(NAME)
 
 re: fclean all
+
+gtk:
+	cd lib && tar -xf gtk+-3.24.29.tar.xz && cd gtk+-3.24.29 && ./configure && make && make install

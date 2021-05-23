@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:15 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/22 17:21:16 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/23 13:05:49 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ static gboolean realize_gl_area(GtkGLArea *gl_area, t_context *ctx)
 {
 	gtk_gl_area_make_current(gl_area);
 	gtk_gl_area_set_has_depth_buffer(gl_area, TRUE);
-	load_opengl_funcs();
 	//gtk_gl_area_set_has_alpha(gl_area, TRUE);
 	GdkGLContext *gl_context = gtk_gl_area_get_context(gl_area);
 	GdkWindow *gl_window = gdk_gl_context_get_window(gl_context);
@@ -89,12 +88,17 @@ int main(int argc, char **argv)
 	GtkApplication	*app;
 	int				exit_status;
 
+	load_opengl_funcs();
 	app = gtk_application_new("fr.eduwer.scop", G_APPLICATION_FLAGS_NONE);
 	ctx.app = app;
 	if (argc >= 2)
 		ctx.filename = argv[1];
 	else
 		ctx.filename = NULL;
+	if (argc >= 3)
+		ctx.text_name = argv[2];
+	else
+		ctx.text_name = NULL;
 	g_signal_connect(app, "activate", G_CALLBACK(on_app_activate), &ctx);
 	exit_status = g_application_run(G_APPLICATION(app), 0, NULL);
 	g_object_unref(app);

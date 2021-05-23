@@ -74,6 +74,7 @@ typedef struct	s_context {
 	GLuint			center;
 	GLuint			has_uv_coords;
 	char			*filename;
+	char			*text_name;
 	gdouble			prev_pos_x;
 	gdouble			prev_pos_y;
 	char			rotating;

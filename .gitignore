@@ -6,3 +6,4 @@ x64
 libs
 .vs
 .vscode
+lib/gtk+-3.24.29
