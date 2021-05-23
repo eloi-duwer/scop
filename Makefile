@@ -22,6 +22,8 @@ OBJF = ./obj/
 
 OBJS = $(addprefix $(OBJF), $(SRC_NAME:.c=.o))
 
+DEPS = $(OBJS:%.o=%.d)
+
 LFT = libft/libft.a
 
 all: $(NAME)
@@ -32,12 +34,14 @@ $(NAME): $(LFT) $(OBJS)
 $(LFT):
 	make -C ./libft
 
+-include $(DEPS)
+
 $(OBJF)%.o: $(SRCF)%.c
 	@mkdir -p $(@D)
-	$(CC) -o $@ $(CFLAGS) -c $(addprefix $(SRCF), $*.c)
+	$(CC) -o $@ $(CFLAGS) -MMD -c $(addprefix $(SRCF), $*.c)
 
 clean:
-	rm -rf $(OBJS)
+	rm -rf $(OBJS) $(DEPS)
 
 fclean: clean
 	rm -rf $(NAME)
