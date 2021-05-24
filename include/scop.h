@@ -27,7 +27,7 @@ typedef struct	s_vec3 {
 }				t_vec3;
 
 typedef struct	s_triangle {
-	uint64_t	points[3];
+	uint32_t	points[3];
 }				t_triangle;
 
 typedef struct	s_object {

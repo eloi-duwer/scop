@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:46 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/23 14:46:14 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/24 17:53:38 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ void	add_vertice(t_context *ctx, t_object *obj, char **line, int line_nb)
 void	add_face(t_context *ctx, t_object *obj, char **line, int line_nb)
 {
 	int			i;
-	int			indexes[3];
+	uint32_t	indexes[3];
 	t_triangle	*new_triangles;
 
 	if (!line[3])
@@ -127,7 +127,7 @@ void	add_face(t_context *ctx, t_object *obj, char **line, int line_nb)
 	indexes[0] = ft_atoi(line[1]) - 1;
 	indexes[1] = ft_atoi(line[2]) - 1;
 	i = 3;
-	while(line[i])
+	while (line[i])
 	{
 		if (obj->nb_faces == obj->size_faces)
 		{
@@ -138,7 +138,7 @@ void	add_face(t_context *ctx, t_object *obj, char **line, int line_nb)
 			obj->size_faces += BUFF_SIZE;
 		}
 		indexes[2] = ft_atoi(line[i]) - 1;
-		ft_memcpy(&obj->faces[obj->nb_faces], indexes, sizeof(int) * 3);
+		ft_memcpy(&obj->faces[obj->nb_faces], indexes, sizeof(uint32_t) * 3);
 		indexes[1] = indexes[2];
 		++i;
 		++(obj->nb_faces);
@@ -232,7 +232,7 @@ void	load_file(t_context *ctx, int fd)
 	uint64_t i = 0;
 	while (i < ctx->objects[0].nb_faces) {
 		if (ctx->objects[0].faces[i].points[2] > ctx->objects[0].nb_vertexes) {
-			printf("Error found, Face index %lu %lu %lu, nb vertexes = %lu\n", ctx->objects[0].faces[i].points[0], ctx->objects[0].faces[i].points[1], ctx->objects[0].faces[i].points[2], ctx->objects[0].nb_vertexes);
+			printf("Error found, Face index %u %u %u, nb vertexes = %lu\n", ctx->objects[0].faces[i].points[0], ctx->objects[0].faces[i].points[1], ctx->objects[0].faces[i].points[2], ctx->objects[0].nb_vertexes);
 		}
 		i++;
 	}

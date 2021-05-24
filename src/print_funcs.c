@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:51 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/23 14:38:35 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/24 16:09:08 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	print_face_indexes(t_triangle *faces, int nb_faces)
 	printf("faces (%p)\n", faces);
 	while (++i < nb_faces)
 	{
-		printf("\t%lu %lu %lu\n", faces[i].points[0], faces[i].points[1], \
+		printf("\t%u %u %u\n", faces[i].points[0], faces[i].points[1], \
 			faces[i].points[2]);
 	}
 }
