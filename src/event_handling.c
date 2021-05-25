@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:21 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/23 13:34:54 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/25 01:32:39 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,8 @@ gboolean	key_press(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 		do_scroll(ctx,  1 / 1.25);
 	else if (e->keyval == GDK_KEY_minus || e->keyval == GDK_KEY_KP_Subtract)
 		do_scroll(ctx, 1.25);
-	else if (e->keyval == GDK_KEY_space && ctx->display_mode == DISPLAY_FACES)
-		ctx->display_mode = DISPLAY_TEXTURES;
-	else if (e->keyval == GDK_KEY_space && ctx->display_mode == DISPLAY_TEXTURES)
-		ctx->display_mode = DISPLAY_FACES;
+	else if (e->keyval == GDK_KEY_space)
+		ctx->display_target = (ctx->display_target + 1) % 4;
 	return (TRUE);
 }
 
@@ -67,23 +65,44 @@ gboolean	scroll(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 
 gboolean	button_press(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 {
-	GdkEventButton *e;
+	GdkEventButton	*e;
+	GdkDisplay		*display;
+	GdkSeat			*seat;
+	gint			pos_win[2];
+	gdouble			pos_cursor[2];
 
 	e = (GdkEventButton *)event;
 	if (e->type == GDK_BUTTON_PRESS && e->button == 1)
+	{
+		display  = gdk_display_get_default();
+		seat = gdk_display_get_default_seat(display);
+		if (ctx->rotating)
+		{
+			gdk_seat_grab(seat, ctx->window, GDK_SEAT_CAPABILITY_ALL_POINTING, TRUE, gdk_cursor_new_for_display(display, GDK_BLANK_CURSOR), event, NULL, NULL);
+			gdk_device_get_position_double(gdk_seat_get_pointer(seat), NULL, pos_cursor, pos_cursor + 1);
+			gdk_window_get_position(ctx->window, pos_win, pos_win + 1);
+			ctx->screen_cursor_x = pos_cursor[0];
+			ctx->screen_cursor_y = pos_cursor[1];
+			ctx->window_cursor_x = pos_cursor[0] - pos_win[0];
+			ctx->window_cursor_y = pos_cursor[1] - pos_win[1];
+		}
+		else
+			gdk_seat_ungrab(gdk_display_get_default_seat(display));
 		ctx->rotating = !ctx->rotating;
+	}
 	return (TRUE);
 }
 
 gboolean	mouse_motion(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 {
-	GdkEventMotion *e;
+	GdkEventMotion	*e;
+	GdkDevice		*device;
 
 	e = (GdkEventMotion *)event;
-	if (!ctx->rotating && ctx->prev_pos_x != -G_MAXDOUBLE && ctx->prev_pos_y != -G_MAXDOUBLE)
+	if (!ctx->rotating && (e->x != ctx->window_cursor_x || e->y != ctx->window_cursor_y))
 	{
-		rotation_around_axis_vec(&ctx->cam.pos, &ctx->cam.norm_vec, 0.01 * (e->y - ctx->prev_pos_y));
-		ctx->cam.total_angle += 0.01 * (e->y - ctx->prev_pos_y);
+		rotation_around_axis_vec(&ctx->cam.pos, &ctx->cam.norm_vec, 0.01 * (e->y - ctx->window_cursor_y));
+		ctx->cam.total_angle += 0.01 * (e->y - ctx->window_cursor_y);
 		if (ctx->cam.total_angle > M_PI / 2)
 		{
 			ctx->cam.up_vec.y = -ctx->cam.up_vec.y;
@@ -94,11 +113,11 @@ gboolean	mouse_motion(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 			ctx->cam.up_vec.y = -ctx->cam.up_vec.y;
 			ctx->cam.total_angle += M_PI;
 		}
-		rotation_vec_y(&ctx->cam.pos, -0.01 * (e->x - ctx->prev_pos_x));
-		rotation_vec_y(&ctx->cam.norm_vec, -0.01 * (e->x - ctx->prev_pos_x));
+		rotation_vec_y(&ctx->cam.pos, -0.01 * (e->x - ctx->window_cursor_x));
+		rotation_vec_y(&ctx->cam.norm_vec, -0.01 * (e->x - ctx->window_cursor_x));
 		init_view_matrix(&ctx->cam.pos, &ctx->cam.look_at, &ctx->cam.up_vec, &ctx->cam.view_matrix);
+		device = gdk_seat_get_pointer(gdk_display_get_default_seat(gdk_display_get_default()));
+		gdk_device_warp(device, gdk_screen_get_default(), ctx->screen_cursor_x, ctx->screen_cursor_y);
 	}
-	ctx->prev_pos_x = e->x;
-	ctx->prev_pos_y = e->y;
 	return (TRUE);
 }

@@ -3,45 +3,113 @@
 uniform uint frames;
 uniform sampler2D textureSampler;
 uniform float display_percent;
+uniform vec3 min_coord;
+uniform	vec3 max_coord;
 
 in vec2 uv_coords;
+in vec3 vertexPos;
 
 out vec3 color;
 
+/*
+** Center is where the interpolation returns 1 * color,
+** And we do a linear interpolation to center - 1 and center + 1, which must return respectively 0 * color
+*/
+vec3 interpolate_color_around_center(vec3 color, float center, float current_display_percent)
+{
+	return (color * (1 - abs(current_display_percent - center)));
+}
+
+/*
+** Linear interpolation optimized, to convert from -1 / 1 to 0 / 1
+*/
 float to_color_range(float color)
 {
 	return (color + 1) / 2;
 }
 
-vec3 get_rainbow_color()
+/*
+** Renders between 2 and 4
+*/
+vec3 get_rainbow_oscilating_color()
 {
-	return vec3(
-		to_color_range(cos(frames / 50.0f)),
-		to_color_range(-cos(frames / 50.0f)),
-		to_color_range(-cos(frames / 37.5f))
+	if (display_percent < 2 || display_percent > 4)
+		return vec3(0, 0, 0);
+
+	return interpolate_color_around_center(
+		vec3(
+			0.9 * to_color_range(cos(frames / 53.0f)),
+			0.9 * to_color_range(-cos(frames / 79.0f)),
+			0.9 * to_color_range(-cos(frames / 71.0f))
+		),
+		3,
+		display_percent
+	);
+}
+
+/*
+** Renders between 3 and 1, centered at 0
+*/
+vec3 get_automatic_face_color_gray()
+{
+	if (display_percent > 1 && display_percent < 3)
+		return vec3(0, 0, 0);
+
+	const int nb_faces_with_same_color = 1;
+	const int nb_different_colors = 10;
+	float col = 1.0 - ((gl_PrimitiveID / nb_faces_with_same_color) % nb_different_colors) / (nb_different_colors - 1.0);
+	return interpolate_color_around_center(
+		vec3(col, col, col),
+		0,
+		display_percent - (4 * int(display_percent > 1))
+	);
+}
+
+//Renders between 0 and 2
+vec3 get_texture_color()
+{
+	if (display_percent > 2)
+		return vec3(0, 0, 0);
+
+	return interpolate_color_around_center(
+		texture(textureSampler, uv_coords).rgb,
+		1,
+		display_percent
 	);
 }
 
 
-const int nb_faces_with_same_color = 1;
-const int nb_different_colors = 10;
-
-float get_automatic_face_color_grey()
+vec3 inv_lerp(vec3 value, vec3 minFrom, vec3 maxFrom, vec3 minTo, vec3 maxTo)
 {
-	return 1 - ((gl_PrimitiveID / nb_faces_with_same_color) % nb_different_colors) / (nb_different_colors - 1.0f);
+  return (minTo + (value - minFrom) * (maxTo - minTo) / (maxFrom - minFrom));
 }
 
-vec3 get_texture_color()
+//Renders between 1 and 3
+vec3 get_color_gradient()
 {
-	return texture(textureSampler, uv_coords).rgb;
+	if (display_percent < 1 || display_percent > 3)
+		return vec3 (0, 0, 0);
+
+	return interpolate_color_around_center(
+		inv_lerp(vertexPos, min_coord, max_coord, vec3(0.2, 0.2, 0.2), vec3(1, 1, 1)),
+		2,
+		display_percent
+	);
 }
 
-void main() {
-	if (display_percent <= 0)
-		color = vec3(get_automatic_face_color_grey());
+void main()
+{
+
+	color = get_color_gradient()
+		+ get_texture_color()
+		+ get_automatic_face_color_gray()
+		+ get_rainbow_oscilating_color();
+
+	/*if (display_percent <= 0)
+		color = vec3(get_automatic_face_color_gray());
 	else if (display_percent >= 1)
 		color = get_texture_color();
 	else {
-		color = vec3(get_automatic_face_color_grey()) * (1 - display_percent) + get_texture_color() * display_percent;
-	}
+		color = vec3(get_automatic_face_color_gray()) * (1 - display_percent) + get_texture_color() * display_percent;
+	}*/
 }

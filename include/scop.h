@@ -13,8 +13,7 @@
 #define _USE_MATH_DEFINES
 # include <math.h>
 # define BUFF_SIZE 1000
-# define DISPLAY_FACES 0
-# define DISPLAY_TEXTURES 1
+# define NB_DISPLAY_MODES 4
 
 typedef struct	s_mat4x4 {
 	float		mat[4][4];
@@ -64,6 +63,8 @@ typedef struct	s_camera {
 typedef struct	s_context {
 	GtkApplication	*app;
 	GdkFrameClock	*clock;
+	GdkWindow		*window;
+	GdkSeat			seat;
 	int				nb_objects;
 	t_object		*objects;
 	t_camera		cam;
@@ -71,17 +72,21 @@ typedef struct	s_context {
 	GLuint			prog;
 	GLuint			mvp;
 	GLuint			frames;
-	GLuint			center;
+	GLuint			center_handle;
 	GLuint			has_uv_coords;
+	GLuint			min_pos_handle;
+	GLuint			max_pos_handle;
 	char			*filename;
 	char			*text_name;
-	gdouble			prev_pos_x;
-	gdouble			prev_pos_y;
+	gdouble			screen_cursor_x;
+	gdouble			screen_cursor_y;
+	gdouble			window_cursor_x;
+	gdouble			window_cursor_y;
 	char			rotating;
 	GLuint			vertex_array;
 	GLuint			vertex_buffers[2];
-	char			display_mode;
-	float			display_percent;
+	int				display_target;
+	float			display_current;
 	GLuint			display_mode_handle;
 }				t_context;
 

@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:46 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/24 17:53:38 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/25 02:09:31 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static void	free_object_ressources(t_context *ctx)
 {
 	int i;
 
+	print_opengl_error("Before freeing object ressources");
 	i = -1;
 	while (++i < ctx->nb_objects)
 	{
@@ -25,6 +26,7 @@ static void	free_object_ressources(t_context *ctx)
 	free(ctx->objects);
 	glDeleteVertexArrays(1, &ctx->vertex_array);
 	glDeleteBuffers(2, ctx->vertex_buffers);
+	print_opengl_error("After freeing object ressources");
 }
 
 void	open_file_chooser(t_context *ctx)
@@ -73,6 +75,8 @@ void	init_object(t_context *ctx)
 	init_identity_matrix(&ctx->objects[0].model_matrix);
 	ctx->objects[0].min_coords = (t_vec3) { INFINITY, INFINITY, INFINITY};
 	ctx->objects[0].max_coords = (t_vec3) { -INFINITY, -INFINITY, -INFINITY};
+	ctx->display_current = 0.0f;
+	ctx->display_target = 0;
 }
 
 static void	check_size_object(t_object *obj, int vertex_index)
@@ -89,9 +93,6 @@ static void	check_size_object(t_object *obj, int vertex_index)
 		obj->max_coords.z = obj->vertexes[vertex_index].z;
 	else if (obj->vertexes[vertex_index].z < obj->min_coords.z)
 		obj->min_coords.z = obj->vertexes[vertex_index].z;
-	obj->center.x += obj->vertexes[vertex_index].x;
-	obj->center.y += obj->vertexes[vertex_index].y;
-	obj->center.z += obj->vertexes[vertex_index].z;
 }
 
 void	add_vertice(t_context *ctx, t_object *obj, char **line, int line_nb)
@@ -161,6 +162,7 @@ void	parse_line(t_context *ctx, t_object *obj, char *line, int line_nb)
 
 void	load_obj_into_opengl(t_context *ctx, t_object *obj)
 {
+	print_opengl_error("Before loading object");
 	glGenVertexArrays(1, &ctx->vertex_array);
 	glBindVertexArray(ctx->vertex_array);
 	glGenBuffers(2, ctx->vertex_buffers);
@@ -175,6 +177,7 @@ void	load_obj_into_opengl(t_context *ctx, t_object *obj)
 	free(obj->faces);
 	obj->vertexes = NULL;
 	obj->faces = NULL;
+	print_opengl_error("After loading object");
 }
 
 static void	set_inital_object_size_and_pos(t_context *ctx, t_object *obj)
@@ -182,13 +185,14 @@ static void	set_inital_object_size_and_pos(t_context *ctx, t_object *obj)
 	double		scale;
 	uint64_t	i;
 
+	print_opengl_error("Before setting inital object size and pos");
 	scale = 2 / fmax(fmax(obj->max_coords.x - \
 		obj->min_coords.x, obj->max_coords.y - obj->min_coords.y), \
 		obj->max_coords.z - obj->min_coords.z);
 	obj->dimensions = (t_vec3) { scale, scale, scale };
-	obj->center.x /= obj->nb_vertexes;
-	obj->center.y /= obj->nb_vertexes;
-	obj->center.z /= obj->nb_vertexes;
+	obj->center.x = (obj->min_coords.x + obj->max_coords.x) / 2;
+	obj->center.y = (obj->min_coords.y + obj->max_coords.y) / 2;
+	obj->center.z = (obj->min_coords.z + obj->max_coords.z) / 2;
 	i = 0;
 	while (i < obj->nb_vertexes)
 	{
@@ -197,7 +201,9 @@ static void	set_inital_object_size_and_pos(t_context *ctx, t_object *obj)
 		obj->vertexes[i].z -= obj->center.z;
 		i++;
 	}
-	glUniform3f(ctx->center, obj->center.x, obj->center.y, obj->center.z);
+	glUniform3f(ctx->center_handle, obj->center.x, obj->center.y, obj->center.z);
+	glUniform3f(ctx->min_pos_handle, obj->min_coords.x, obj->min_coords.y, obj->min_coords.z);
+	glUniform3f(ctx->max_pos_handle, obj->max_coords.x, obj->max_coords.y, obj->max_coords.z);
 	printf("min coord:\n");
 	print_vec(&obj->min_coords);
 	printf("max coord:\n");
@@ -205,13 +211,14 @@ static void	set_inital_object_size_and_pos(t_context *ctx, t_object *obj)
 	printf("center:\n");
 	print_vec(&obj->center);
 	printf("scale: %.4f\n", scale);
+	print_opengl_error("After setting inital object size and pos");
 }
 
 void	load_file(t_context *ctx, int fd)
 {
-	int		ret;
-	char	*line;
-	int		line_nb;
+	int			ret;
+	char		*line;
+	int			line_nb;
 
 	init_object(ctx);
 	line_nb = 1;
@@ -227,15 +234,6 @@ void	load_file(t_context *ctx, int fd)
 	set_inital_object_size_and_pos(ctx, &ctx->objects[0]);
 	printf("nb vertexes: %lu\n", ctx->objects[0].nb_vertexes);
 	printf("nb faces: %lu\n", ctx->objects[0].nb_faces);
-	//print_face_coords(ctx->objects);
-
-	uint64_t i = 0;
-	while (i < ctx->objects[0].nb_faces) {
-		if (ctx->objects[0].faces[i].points[2] > ctx->objects[0].nb_vertexes) {
-			printf("Error found, Face index %u %u %u, nb vertexes = %lu\n", ctx->objects[0].faces[i].points[0], ctx->objects[0].faces[i].points[1], ctx->objects[0].faces[i].points[2], ctx->objects[0].nb_vertexes);
-		}
-		i++;
-	}
 	load_obj_into_opengl(ctx, &ctx->objects[0]);
 	if (ctx->text_name != NULL)
 		load_bmp_into_opengl(ctx, ctx->text_name);

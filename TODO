@@ -1,0 +1,10 @@
+- Regler le bug de glUniform3f quand on recharge un objet
+	(apparement on ne peut pas set plusieurs fois un uniform sans recréer un programme), ou supprimer l'option
+- Ajouter une skybox pour bien faire la différence entre l'objet qui tourne et la caméra qui tourne
+- Ajouter des lignes/fleches centrées en 0 0 0 pour bien voir l'objet bouger + angle de la cam
+- Limiter l'angle vertical de la caméra pour ne pas pouvoir "renverser" l'objet
+- Parser les vertex normal + texture coords (vn et vt dans les objets)
+- Permettre de charger pls objets ? (+ tag g dans les .obj ?)
+- Cycler entre les textures ?
+- Chemin par défaut dans le chargeur d'objets ?
+- Plein de trucs cools en + ?

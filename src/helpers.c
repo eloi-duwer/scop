@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:27 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/23 12:22:52 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/25 01:57:38 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ void	init_ctx(t_context *ctx)
 	init_view_matrix(&ctx->cam.pos, &ctx->cam.look_at, &ctx->cam.up_vec, \
 		&ctx->cam.view_matrix);
 	ctx->rotating = 1;
-	ctx->prev_pos_x = -G_MAXDOUBLE;
-	ctx->prev_pos_y = -G_MAXDOUBLE;
 }
 
 void	init_opengl(t_context *ctx)
@@ -37,24 +35,21 @@ void	init_opengl(t_context *ctx)
 	create_program(ctx);
 	ctx->mvp = glGetUniformLocation(ctx->prog, "model_view_projection_mat");
 	ctx->frames = glGetUniformLocation(ctx->prog, "frames");
-	ctx->center = glGetUniformLocation(ctx->prog, "center");
+	ctx->center_handle = glGetUniformLocation(ctx->prog, "center");
 	ctx->has_uv_coords = glGetUniformLocation(ctx->prog, "has_uv_coords");
 	ctx->display_mode_handle = glGetUniformLocation(ctx->prog, "display_percent");
-	ctx->display_mode = DISPLAY_FACES;
-	ctx->display_percent = 0.0f;
+	ctx->min_pos_handle = glGetUniformLocation(ctx->prog, "min_coord");
+	ctx->max_pos_handle = glGetUniformLocation(ctx->prog, "max_coord");
 	glUniform1i(ctx->has_uv_coords, GL_FALSE);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//glFrontFace(GL_BACK);
 	if (ctx->filename)
 		fd = open(ctx->filename, O_RDONLY);
 	else
 		fd = open("./models/42.obj", O_RDONLY);
 	if (fd == -1)
 		print_error(ctx, "File %s can't be opened\n", ctx->filename);
-	print_opengl_error("avant load file");
+	print_opengl_error("before loading file");
 	load_file(ctx, fd);
 	close(fd);
 }

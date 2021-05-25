@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:15 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/23 14:37:16 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/25 01:54:15 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,13 @@ static gboolean render(GtkGLArea *area, GdkGLContext *context, t_context *ctx)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (ctx->rotating)
 		rotation_matrix_y(&ctx->objects[0].rotation_matrix, 0.003);
-	if (ctx->display_mode == DISPLAY_FACES && ctx->display_percent > 0.0f)
-		ctx->display_percent -= 0.0125f;
-	else if (ctx->display_mode == DISPLAY_TEXTURES && ctx->display_percent < 1.0f)
-		ctx->display_percent += 0.0125f;
-	glUniform1f(ctx->display_mode_handle, ctx->display_percent);
+	if ((int)floor(ctx->display_current) != ctx->display_target)
+	{
+		ctx->display_current += 0.0125f;
+		if (ctx->display_current >= (float)NB_DISPLAY_MODES)
+			ctx->display_current = 0;
+	}
+	glUniform1f(ctx->display_mode_handle, ctx->display_current);
 	construct_model_matrix(&ctx->objects[0]);
 	mat4x4_mult(&ctx->objects[0].model_matrix, &ctx->cam.view_matrix, &ctx->mvp_matrix);
 	mat4x4_mult(&ctx->mvp_matrix, &ctx->cam.projection_matrix, &ctx->mvp_matrix);
@@ -51,10 +53,9 @@ static gboolean realize_gl_area(GtkGLArea *gl_area, t_context *ctx)
 {
 	gtk_gl_area_make_current(gl_area);
 	gtk_gl_area_set_has_depth_buffer(gl_area, TRUE);
-	//gtk_gl_area_set_has_alpha(gl_area, TRUE);
 	GdkGLContext *gl_context = gtk_gl_area_get_context(gl_area);
-	GdkWindow *gl_window = gdk_gl_context_get_window(gl_context);
-	GdkFrameClock *clock = gdk_window_get_frame_clock(gl_window);
+	ctx->window = gdk_gl_context_get_window(gl_context);
+	GdkFrameClock *clock = gdk_window_get_frame_clock(ctx->window);
 	g_signal_connect(clock, "update", G_CALLBACK(frame_update), gl_area);
 	print_opengl_error("realize_gl_area");
 	ctx->clock = clock;
@@ -89,7 +90,8 @@ Controls once the object is loaded:\n\
 i, j, k, l, u, o : Move the camera Up, Left, Down, Right, Backward, Forward respectively\n\
 Scroll whell / + and - : zoom / unzoom\n\
 Left click : Stop the object rotation and Rotate the camera manually\n\
-Space: Apply the texture\n");
+Space: Apply the texture\n\
+Ctrl + o: Open an another file object\n");
 	return (0);
 }
 

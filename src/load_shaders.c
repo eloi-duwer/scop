@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:41 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/22 17:21:42 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/25 01:37:57 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void verif_gl_shader_error(t_context *ctx, GLuint id)
 	if ((str = (char *)malloc(sizeof(char) * size)) != NULL)
 	{
 		glGetShaderInfoLog(id, size, &size, str);
-		printf("Shader compilation error: %s\n", str);
+		printf("Shader compilation error:\n%s\n", str);
 		free(str);
 	}
 	else
