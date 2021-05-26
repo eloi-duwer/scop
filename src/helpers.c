@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:27 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/25 01:57:38 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/26 03:59:17 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@ void	init_ctx(t_context *ctx)
 	ctx->cam.total_angle = 0.0f;
 	ctx->cam.screen_width = 1280;
 	ctx->cam.screen_height = 720;
+	ctx->nb_objects = 1;
+	ctx->display_current = 0.0f;
+	ctx->display_target = 0;
 	init_projection_matrix(ctx->cam.screen_height, ctx->cam.screen_width, \
 		&ctx->cam.projection_matrix);
 	init_view_matrix(&ctx->cam.pos, &ctx->cam.look_at, &ctx->cam.up_vec, \
@@ -30,28 +33,28 @@ void	init_ctx(t_context *ctx)
 
 void	init_opengl(t_context *ctx)
 {
-	int	fd;
-
-	create_program(ctx);
-	ctx->mvp = glGetUniformLocation(ctx->prog, "model_view_projection_mat");
-	ctx->frames = glGetUniformLocation(ctx->prog, "frames");
-	ctx->center_handle = glGetUniformLocation(ctx->prog, "center");
-	ctx->has_uv_coords = glGetUniformLocation(ctx->prog, "has_uv_coords");
-	ctx->display_mode_handle = glGetUniformLocation(ctx->prog, "display_percent");
-	ctx->min_pos_handle = glGetUniformLocation(ctx->prog, "min_coord");
-	ctx->max_pos_handle = glGetUniformLocation(ctx->prog, "max_coord");
-	glUniform1i(ctx->has_uv_coords, GL_FALSE);
+	print_opengl_error("Before loading progs");
+	ctx->prog_object = create_program(ctx, "./shaders/object_fragment.glsl", "./shaders/object_vertex.glsl");
+	ctx->prog_skybox = create_program(ctx, "./shaders/skybox_fragment.glsl", "./shaders/skybox_vertex.glsl");
+	print_opengl_error("After loading progs");
+	ctx->frames = glGetUniformLocation(ctx->prog_object, "frames");
+	ctx->has_uv_coords = glGetUniformLocation(ctx->prog_object, "has_uv_coords");
+	ctx->display_mode_handle = glGetUniformLocation(ctx->prog_object, "display_percent");
+	ctx->min_pos_handle = glGetUniformLocation(ctx->prog_object, "min_coord");
+	ctx->max_pos_handle = glGetUniformLocation(ctx->prog_object, "max_coord");
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+	print_opengl_error("Before loading file");
 	if (ctx->filename)
-		fd = open(ctx->filename, O_RDONLY);
+		load_object_from_file(ctx->objects, ctx, ctx->filename);
 	else
-		fd = open("./models/42.obj", O_RDONLY);
-	if (fd == -1)
-		print_error(ctx, "File %s can't be opened\n", ctx->filename);
-	print_opengl_error("before loading file");
-	load_file(ctx, fd);
-	close(fd);
+		load_object_from_file(ctx->objects, ctx, "./models/42.obj");
+	if (ctx->text_name != NULL)
+		load_bmp_into_opengl(ctx, ctx->text_name);
+	else
+		load_bmp_into_opengl(ctx, "./textures/unicorn_pattern.bmp");
+	load_skybox_into_opengl(ctx);
+	ctx->objects[0].mvp_handle = glGetUniformLocation(ctx->prog_object, "model_view_projection_mat");
+	ctx->skybox.mvp_handle = glGetUniformLocation(ctx->prog_skybox, "view_projection_mat");
 }
 
 void	quit_prog(t_context *ctx)

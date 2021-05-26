@@ -6,53 +6,66 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 13:37:24 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/22 17:29:06 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/26 02:50:48 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef __GL_INIT_H__
 # define __GL_INIT_H__
 
-# define GL_FALSE					0
-# define GL_TRUE					1
+# define GL_FALSE						0
+# define GL_TRUE						1
 
-# define GL_NO_ERROR				0
+# define GL_NO_ERROR					0
 
-# define GL_UNSIGNED_BYTE			0x1401
-# define GL_UNSIGNED_INT			0x1405
-# define GL_FLOAT					0x1406
+# define GL_UNSIGNED_BYTE				0x1401
+# define GL_UNSIGNED_INT				0x1405
+# define GL_FLOAT						0x1406
 
-# define GL_DEPTH_BUFFER_BIT		0x00000100
-# define GL_COLOR_BUFFER_BIT		0x00004000
+# define GL_DEPTH_BUFFER_BIT			0x00000100
+# define GL_COLOR_BUFFER_BIT			0x00004000
 
-# define GL_TEXTURE_2D				0x0DE1
+# define GL_TEXTURE_2D					0x0DE1
+# define GL_TEXTURE_CUBE_MAP			0x8513
 
-# define GL_DEPTH_TEST				0x0B71
+# define GL_DEPTH_TEST					0x0B71
 
-# define GL_TRIANGLES				0x0004
+# define GL_TRIANGLES					0x0004
 
-# define GL_LESS					0x0201
+# define GL_LESS						0x0201
+# define GL_LEQUAL						0x0203
 
-# define GL_LINEAR					0x2601
+# define GL_LINEAR						0x2601
 
-# define GL_RGB						0x1907
-# define GL_BGR						0x80E0
+# define GL_RGB							0x1907
+# define GL_BGR							0x80E0
 
-# define GL_TEXTURE_MAG_FILTER		0x2800
-# define GL_TEXTURE_MIN_FILTER		0x2801
-# define GL_TEXTURE_WRAP_S			0x2802
-# define GL_TEXTURE_WRAP_T			0x2803
-# define GL_REPEAT					0x2901
+# define GL_TEXTURE_MAG_FILTER			0x2800
+# define GL_TEXTURE_MIN_FILTER			0x2801
+# define GL_TEXTURE_WRAP_S				0x2802
+# define GL_TEXTURE_WRAP_T				0x2803
+# define GL_TEXTURE_WRAP_R				0x8072
+# define GL_REPEAT						0x2901
+# define GL_CLAMP_TO_EDGE				0x812F
 
-# define GL_ARRAY_BUFFER			0x8892
-# define GL_ELEMENT_ARRAY_BUFFER	0x8893
-# define GL_STATIC_DRAW				0x88E4
+# define GL_TEXTURE0					0x84C0
+# define GL_TEXTURE_CUBE_MAP_POSITIVE_X	0x8515
+# define GL_TEXTURE_CUBE_MAP_NEGATIVE_X 0x8516
+# define GL_TEXTURE_CUBE_MAP_POSITIVE_Y 0x8517
+# define GL_TEXTURE_CUBE_MAP_NEGATIVE_Y 0x8518
+# define GL_TEXTURE_CUBE_MAP_POSITIVE_Z 0x8519
+# define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z 0x851A
 
-# define GL_FRAGMENT_SHADER			0x8B30
-# define GL_VERTEX_SHADER			0x8B31
-# define GL_COMPILE_STATUS			0x8B81
-# define GL_LINK_STATUS				0x8B82
-# define GL_INFO_LOG_LENGTH			0x8B84
+# define GL_ARRAY_BUFFER				0x8892
+# define GL_ELEMENT_ARRAY_BUFFER		0x8893
+# define GL_STATIC_DRAW					0x88E4
+
+# define GL_FRAGMENT_SHADER				0x8B30
+# define GL_VERTEX_SHADER				0x8B31
+# define GL_COMPILE_STATUS				0x8B81
+# define GL_LINK_STATUS					0x8B82
+# define GL_INFO_LOG_LENGTH				0x8B84
+# define GL_ACTIVE_UNIFORMS				0x8B86
 
 typedef unsigned char	GLboolean;
 typedef char			GLchar;
@@ -77,7 +90,7 @@ typedef signed long int	GLsizeiptr;
 
 # define OPENGL_FUNCS \
 GLFUNC(void, EnableVertexAttribArray, GLuint index) \
-GLFUNC(void, BindBuffer, GLenum targer, GLuint buffer) \
+GLFUNC(void, BindBuffer, GLenum target, GLuint buffer) \
 GLFUNC(void, VertexAttribPointer, GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer) \
 GLFUNC(void, ClearColor, GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) \
 GLFUNC(void, Clear, GLbitfield mask) \
@@ -114,6 +127,8 @@ GLFUNC(void, BindTexture, GLenum target, GLuint texture) \
 GLFUNC(void, TexImage2D, GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels) \
 GLFUNC(void, TexParameteri, GLenum target, GLenum pname, GLint param) \
 GLFUNC(void, GenerateMipmap, GLenum target) \
+GLFUNC(void, ActiveTexture, GLenum texture) \
+GLFUNC(void, DrawArrays, GLenum mode, GLint first, GLsizei count) \
 
 /*
 ** Declare the functions as extern

@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:21 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/25 01:32:39 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/25 23:40:18 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,12 +97,20 @@ gboolean	mouse_motion(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 {
 	GdkEventMotion	*e;
 	GdkDevice		*device;
+	double			prev_angle;
 
 	e = (GdkEventMotion *)event;
 	if (!ctx->rotating && (e->x != ctx->window_cursor_x || e->y != ctx->window_cursor_y))
 	{
-		rotation_around_axis_vec(&ctx->cam.pos, &ctx->cam.norm_vec, 0.01 * (e->y - ctx->window_cursor_y));
+		prev_angle = ctx->cam.total_angle;
 		ctx->cam.total_angle += 0.01 * (e->y - ctx->window_cursor_y);
+		if (ctx->cam.total_angle > M_PI / 2 - 0.1)
+			ctx->cam.total_angle = prev_angle;
+		else if (ctx->cam.total_angle < -M_PI / 2 + 0.1)
+			ctx->cam.total_angle = prev_angle;
+		else
+			rotation_around_axis_vec(&ctx->cam.pos, &ctx->cam.norm_vec, 0.01 * (e->y - ctx->window_cursor_y));
+		//Obsolete, as we limit the angle the cam can be rotated, so it can't do more than 180 degrees
 		if (ctx->cam.total_angle > M_PI / 2)
 		{
 			ctx->cam.up_vec.y = -ctx->cam.up_vec.y;

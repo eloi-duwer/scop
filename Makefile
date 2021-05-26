@@ -5,14 +5,17 @@ SRC_NAME = main.c \
 	matrix/matrix_operations.c \
 	matrix/rotation_matrix.c \
 	print_funcs.c \
-	open_file.c \
+	load_object.c \
 	event_handling.c \
 	load_bmp.c \
 	load_opengl_funcs.c \
+	skybox.c \
+	render.c \
+	parse_object.c
 
 NAME = scop
 
-CC = gcc
+CC = clang
 
 CFLAGS = -Wall -Wextra -Wno-unused-parameter -g -I./include `pkg-config --cflags gtk+-3.0` -I./libft/include
 

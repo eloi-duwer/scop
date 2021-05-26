@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:22:19 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/22 17:22:19 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/26 03:56:54 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,16 @@ void	init_view_matrix(t_vec3 *pos, t_vec3 *center, t_vec3 *up, t_mat4x4 *ret)
 	ret->mat[3][3] = 1;
 }
 
-void	construct_model_matrix(t_object *obj)
+void	construct_model_matrix(t_context *ctx, t_object *obj, int center_around_camera)
 {
 	init_identity_matrix(&obj->model_matrix);
 	obj->model_matrix.mat[0][0] = obj->dimensions.x;
 	obj->model_matrix.mat[1][1] = obj->dimensions.y;
 	obj->model_matrix.mat[2][2] = obj->dimensions.z;
 	mat4x4_mult(&obj->model_matrix, &obj->rotation_matrix, &obj->model_matrix);
-	mat4x4_displace(&obj->model_matrix, obj->world_position.x, \
-		obj->world_position.y, obj->world_position.z);
+	if (center_around_camera)
+		mat4x4_displace(&obj->model_matrix, ctx->cam.pos.x, ctx->cam.pos.y, ctx->cam.pos.z);
+	else
+		mat4x4_displace(&obj->model_matrix, obj->world_position.x, \
+			obj->world_position.y, obj->world_position.z);
 }

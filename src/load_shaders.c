@@ -6,13 +6,13 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:41 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/25 01:37:57 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/26 01:48:03 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <scop.h>
 
-static void verif_gl_shader_error(t_context *ctx, GLuint id)
+static void verif_gl_shader_error(t_context *ctx, GLuint id, const char *file)
 {
 	GLint	res;
 	char	*str;
@@ -25,7 +25,7 @@ static void verif_gl_shader_error(t_context *ctx, GLuint id)
 	if ((str = (char *)malloc(sizeof(char) * size)) != NULL)
 	{
 		glGetShaderInfoLog(id, size, &size, str);
-		printf("Shader compilation error:\n%s\n", str);
+		printf("Shader compilation error (file %s):\n%s\n", file, str);
 		free(str);
 	}
 	else
@@ -54,7 +54,7 @@ static void 	verif_gl_program_error(t_context *ctx, GLuint prog)
 	quit_prog(ctx);
 }
 
-static char		*read_shader(t_context *ctx, char *file_name)
+static char		*read_shader(t_context *ctx, const char *file_name)
 {
 	FILE	*file;
 	char	*src;
@@ -63,14 +63,14 @@ static char		*read_shader(t_context *ctx, char *file_name)
 	if ((file = fopen(file_name, "r")) == NULL)
 	{
 		printf("Shader file %s not found\n", file_name);
-		quit_prog(ctx);
+		exit(1);
 	}
 	fseek(file, 0, SEEK_END);
 	size = ftell(file);
 	if ((src = (char *)malloc(sizeof(char) * (size + 1))) == NULL)
 	{
 		printf("Error while reading shader (malloc)\n");
-		quit_prog(ctx);
+		exit(1);
 	}
 	src[size] = '\0';
 	rewind(file);
@@ -80,7 +80,7 @@ static char		*read_shader(t_context *ctx, char *file_name)
 }
 
 static GLuint	make_shader(t_context *ctx, GLuint prog, \
-	GLenum shaderType, char *src_name)
+	GLenum shaderType, const char *src_name)
 {
 	GLuint	id;
 	char	*src;
@@ -90,19 +90,20 @@ static GLuint	make_shader(t_context *ctx, GLuint prog, \
 	glShaderSource(id, 1, (const GLchar **)&src, NULL);
 	free(src);
 	glCompileShader(id);
-	verif_gl_shader_error(ctx, id);
+	verif_gl_shader_error(ctx, id, src_name);
 	glAttachShader(prog, id);
 	return id;
 }
 
-void			create_program(t_context *ctx)
+GLuint			create_program(t_context *ctx, \
+	const char *fragment_shader, const char *vertex_shader)
 {
-	ctx->prog = glCreateProgram();
-	make_shader(ctx, ctx->prog, GL_FRAGMENT_SHADER,\
-		"./shaders/fragment_shader.glsl");
-	make_shader(ctx, ctx->prog, GL_VERTEX_SHADER,\
-		"./shaders/vertex_shader.glsl");
-	glLinkProgram(ctx->prog);
-	verif_gl_program_error(ctx, ctx->prog);
-	glUseProgram(ctx->prog);
+	GLuint prog;
+
+	prog = glCreateProgram();
+	make_shader(ctx, prog, GL_FRAGMENT_SHADER, fragment_shader);
+	make_shader(ctx, prog, GL_VERTEX_SHADER, vertex_shader);
+	glLinkProgram(prog);
+	verif_gl_program_error(ctx, prog);
+	return (prog);
 }
