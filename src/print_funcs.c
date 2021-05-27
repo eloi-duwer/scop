@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:51 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/24 16:09:08 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/28 01:47:09 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	print_face_coords(t_object *obj)
 {
 	uint64_t	i;
 
-	printf("faces coords (obj %p)\n", obj);
+	printf("faces coords\n");
 	i = 0;
 	while (i < obj->nb_faces)
 	{

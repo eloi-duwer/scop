@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:46 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/26 03:35:00 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/28 01:35:18 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,12 @@ static void	set_inital_object_size_and_pos(t_context *ctx, t_object *obj)
 	obj->center.x = (obj->min_coords.x + obj->max_coords.x) / 2;
 	obj->center.y = (obj->min_coords.y + obj->max_coords.y) / 2;
 	obj->center.z = (obj->min_coords.z + obj->max_coords.z) / 2;
+	obj->min_coords.x -= obj->center.x;
+	obj->min_coords.y -= obj->center.y;
+	obj->min_coords.z -= obj->center.z;
+	obj->max_coords.x -= obj->center.x;
+	obj->max_coords.y -= obj->center.y;
+	obj->max_coords.z -= obj->center.z;
 	i = 0;
 	while (i < obj->nb_vertexes)
 	{
@@ -150,5 +156,6 @@ void	load_object_from_file(t_object *obj_ret, t_context *ctx, const char *filena
 	set_inital_object_size_and_pos(ctx, obj_ret);
 	printf("nb vertexes: %lu\n", obj_ret->nb_vertexes);
 	printf("nb faces: %lu\n", obj_ret->nb_faces);
+	print_face_coords(obj_ret);
 	load_obj_into_opengl(ctx, obj_ret);
 }

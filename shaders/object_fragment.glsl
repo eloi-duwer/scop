@@ -6,10 +6,14 @@ uniform float display_percent;
 uniform vec3 min_coord;
 uniform	vec3 max_coord;
 
-in vec2 uv_coords;
 in vec3 vertexPos;
 
 out vec3 color;
+
+vec3 inv_lerp(vec3 value, vec3 minFrom, vec3 maxFrom, vec3 minTo, vec3 maxTo)
+{
+  return (minTo + (value - minFrom) * (maxTo - minTo) / (maxFrom - minFrom));
+}
 
 /*
 ** Center is where the interpolation returns 1 * color,
@@ -72,16 +76,10 @@ vec3 get_texture_color()
 		return vec3(0, 0, 0);
 
 	return interpolate_color_around_center(
-		texture(textureSampler, uv_coords).rgb,
+		texture(textureSampler, /*inv_lerp(*/vertexPos/*, min_coord, max_coord, vec3(0, 0, 0), vec3(1, 1, 1))*/.yz).rgb,
 		1,
 		display_percent
 	);
-}
-
-
-vec3 inv_lerp(vec3 value, vec3 minFrom, vec3 maxFrom, vec3 minTo, vec3 maxTo)
-{
-  return (minTo + (value - minFrom) * (maxTo - minTo) / (maxFrom - minFrom));
 }
 
 //Renders between 1 and 3

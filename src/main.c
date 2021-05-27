@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:15 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/26 01:00:00 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/27 23:57:22 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,13 @@ static gboolean realize_gl_area(GtkGLArea *gl_area, t_context *ctx)
 	return (TRUE);
 }
 
+static gboolean blur_event(GtkWidget *widget, GdkEvent *event, t_context *ctx)
+{
+	gdk_seat_ungrab(gdk_display_get_default_seat(gdk_display_get_default()));
+	ctx->rotating = true;
+	return (TRUE);
+}
+
 static void on_app_activate(GApplication *app, t_context *ctx)
 {
 	GtkWidget *window = gtk_application_window_new(GTK_APPLICATION(app));
@@ -45,7 +52,8 @@ static void on_app_activate(GApplication *app, t_context *ctx)
 	g_signal_connect(window, "button-press-event", G_CALLBACK(button_press), ctx);
 	g_signal_connect(window, "scroll-event", G_CALLBACK(scroll), ctx);
 	g_signal_connect(window, "motion-notify-event", G_CALLBACK(mouse_motion), ctx);
-	gtk_widget_add_events(window, GDK_SCROLL_MASK | GDK_POINTER_MOTION_MASK);
+	g_signal_connect(window, "focus-out-event", G_CALLBACK(blur_event), ctx);
+	gtk_widget_add_events(window, GDK_SCROLL_MASK | GDK_POINTER_MOTION_MASK | GDK_FOCUS_CHANGE_MASK);
 	g_signal_connect(gl_area, "render", G_CALLBACK(render), ctx);
 	g_signal_connect(gl_area, "realize", G_CALLBACK(realize_gl_area), ctx);
 	gtk_container_add(GTK_CONTAINER(window), gl_area);

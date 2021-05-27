@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 00:06:16 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/26 04:30:27 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/28 01:31:07 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,17 @@ static void load_skybox_cube(t_context *ctx)
 static void	reverse_bmp(t_bmp_ctx *bmp)
 {
 	unsigned char	*tmp;
+	const int		w = bmp->img_width * 3;
+	const int		h = bmp->img_height;
 
-	tmp = (unsigned char *)malloc(bmp->img_width * 3);
-	for (unsigned int i = 0; i < bmp->size / 2; i += bmp->img_width * 3)
+	tmp = (unsigned char *)malloc(w);
+	if (tmp == NULL)
+		return ;
+	for (int i = 0; i < h / 2; i++)
 	{
-		printf("%u\n", i);
-		ft_memcpy(tmp, &bmp->data[i], bmp->img_width * 3);
-		ft_memcpy(&bmp->data[i], &bmp->data[bmp->size - (i * bmp->img_width * 3) - 1], bmp->img_width * 3);
-		ft_memcpy(&bmp->data[bmp->size - (i * bmp->img_width * 3) - 1], tmp, bmp->img_width * 3);
+		ft_memcpy(tmp, &bmp->data[bmp->size - (i + 1) * w], w);
+		ft_memcpy(&bmp->data[bmp->size - (i + 1) * w], &bmp->data[i * w], w);
+		ft_memcpy(&bmp->data[i * w], tmp, w);
 	}
 	free(tmp);
 }
