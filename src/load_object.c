@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:46 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/28 01:35:18 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/28 16:13:02 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,5 @@ void	load_object_from_file(t_object *obj_ret, t_context *ctx, const char *filena
 	set_inital_object_size_and_pos(ctx, obj_ret);
 	printf("nb vertexes: %lu\n", obj_ret->nb_vertexes);
 	printf("nb faces: %lu\n", obj_ret->nb_faces);
-	print_face_coords(obj_ret);
 	load_obj_into_opengl(ctx, obj_ret);
 }

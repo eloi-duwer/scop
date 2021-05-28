@@ -91,11 +91,10 @@ typedef struct	s_context {
 
 typedef struct	s_bmp_ctx {
 	int				fd;
-	unsigned char	header[54];
-	int				data_offset;
-	int				img_width;
-	int				img_height;
-	unsigned int	size;
+	int32_t			data_offset;
+	int32_t			img_width;
+	int32_t			img_height;
+	uint32_t		size;
 	unsigned char	*data;
 }				t_bmp_ctx;
 

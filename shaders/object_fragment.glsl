@@ -76,7 +76,7 @@ vec3 get_texture_color()
 		return vec3(0, 0, 0);
 
 	return interpolate_color_around_center(
-		texture(textureSampler, /*inv_lerp(*/vertexPos/*, min_coord, max_coord, vec3(0, 0, 0), vec3(1, 1, 1))*/.yz).rgb,
+		texture(textureSampler, /*inv_lerp(*/vertexPos/*, min_coord, max_coord, vec3(0, 0, 0), vec3(1, 1, 1))*/.xy).rgb,
 		1,
 		display_percent
 	);
