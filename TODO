@@ -1,4 +1,3 @@
-- Ajouter une skybox pour bien faire la différence entre l'objet qui tourne et la caméra qui tourne
 - Ajouter des lignes/fleches centrées en 0 0 0 pour bien voir l'objet bouger + angle de la cam
 - Parser les vertex normal(osef) + texture coords(pas osef) (vn et vt dans les objets)
 - Cycler entre les textures ?

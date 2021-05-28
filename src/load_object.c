@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:46 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/28 16:13:02 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/28 16:34:54 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@ static void	free_object_ressources(t_context *ctx)
 	{
 		free(ctx->objects[i].faces);
 		free(ctx->objects[i].vertexes);
+		free(ctx->objects[i].tex_coords);
 		glDeleteVertexArrays(1, &ctx->objects[i].vertex_array);
 		glDeleteBuffers(2, ctx->objects[i].vertex_buffers);
 	}
-	free(ctx->objects);
+	//free(ctx->objects);
 	print_opengl_error("After freeing object ressources");
 }
 
@@ -64,6 +65,10 @@ void	init_object(t_context *ctx, t_object *obj)
 		print_error(ctx, "Error on malloc\n");
 	obj->size_vertexes = BUFF_SIZE;
 	obj->nb_vertexes = 0;
+	if ((obj->tex_coords = (t_vec2 *)malloc(sizeof(t_vec2) * BUFF_SIZE)) == NULL)
+		print_error(ctx, "Error on malloc\n");
+	obj->size_tex_coords = BUFF_SIZE;
+	obj->nb_tex_coords = 0;
 	obj->center = (t_vec3) {0.0, 0.0, 0.0};
 	obj->world_position = (t_vec3) {0.0, 0.0, 0.0};
 	obj->dimensions = (t_vec3) {1.0f, 1.0f, 1.0f};

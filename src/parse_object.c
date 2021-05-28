@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 03:01:31 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/26 03:34:23 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/05/28 16:29:08 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	add_face(t_context *ctx, t_object *obj, char **line, int line_nb)
 	uint32_t	indexes[3];
 	t_triangle	*new_triangles;
 
-	if (!line[3])
+	if (!line[1] || !line[2] || !line[3])
 		print_error(ctx, "Line %d: The face must have at least 3 points\n");
 	indexes[0] = ft_atoi(line[1]) - 1;
 	indexes[1] = ft_atoi(line[2]) - 1;
@@ -79,6 +79,22 @@ void	add_face(t_context *ctx, t_object *obj, char **line, int line_nb)
 	}
 }
 
+void	add_tex_coord(t_context *ctx, t_object *obj, char **line, int line_nb)
+{
+	t_vec2	*new_texutre_coords;
+
+	if (obj->nb_tex_coords == obj->size_tex_coords)
+	{
+		if (!(new_texutre_coords = (t_vec2 *)realloc(obj->tex_coords, \
+			sizeof(t_vec2) * (obj->nb_tex_coords + BUFF_SIZE))))
+			print_error(ctx, "Realloc returned NULL\n");
+		obj->tex_coords = new_texutre_coords;
+		obj->size_tex_coords += BUFF_SIZE;
+	}
+	obj->tex_coords[obj->nb_tex_coords].x = strtof(line[1], NULL);
+	obj->tex_coords[obj->nb_tex_coords].y = strtof(line[2], NULL);
+}
+
 void	parse_line(t_context *ctx, t_object *obj, char *line, int line_nb)
 {
 	char **splitted;
@@ -90,5 +106,7 @@ void	parse_line(t_context *ctx, t_object *obj, char *line, int line_nb)
 		add_vertice(ctx, obj, splitted, line_nb);
 	else if (ft_strcmp(splitted[0], "f") == 0)
 		add_face(ctx, obj, splitted, line_nb);
+	else if (ft_strcmp(splitted[0], "vt") == 0)
+		add_tex_coord(ctx, obj, splitted, line_nb);
 	free_string_tab(splitted);
 }

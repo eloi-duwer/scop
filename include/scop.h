@@ -22,6 +22,11 @@ typedef struct	s_vec3 {
 	float		z;
 }				t_vec3;
 
+typedef struct	s_vec2 {
+	float		x;
+	float		y;
+}				t_vec2;
+
 typedef struct	s_triangle {
 	uint32_t	points[3];
 }				t_triangle;
@@ -33,6 +38,9 @@ typedef struct	s_object {
 	uint64_t	nb_vertexes;
 	uint64_t	size_vertexes;
 	t_vec3		*vertexes;
+	uint64_t	nb_tex_coords;
+	uint64_t	size_tex_coords;
+	t_vec2		*tex_coords;
 	t_vec3		center;
 	t_vec3		world_position;
 	t_vec3		dimensions;
