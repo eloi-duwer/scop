@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 00:59:54 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/28 01:42:46 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/03 17:08:10 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ static void	render_obj(t_context *ctx, t_object *obj)
 	mat4x4_mult(&obj->model_matrix, &ctx->cam.view_matrix, &obj->mvp_matrix);
 	mat4x4_mult(&obj->mvp_matrix, &ctx->cam.projection_matrix, &obj->mvp_matrix);
 	glUniformMatrix4fv(obj->mvp_handle, 1, GL_TRUE, &obj->mvp_matrix.mat[0][0]);
-
 	glBindVertexArray(obj->vertex_array);
 	print_opengl_error("before drawElements object");
 	glDrawElements(GL_TRIANGLES, obj->nb_faces * 3, GL_UNSIGNED_INT, (void *)0);
@@ -65,7 +64,7 @@ static void	render_skybox(t_context *ctx, t_object *skybox)
 	glUseProgram(ctx->prog_skybox);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, ctx->tex_skybox);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, ctx->skybox.texture);
 	glDepthFunc(GL_LEQUAL);
 
 	construct_model_matrix(ctx, skybox, 1);

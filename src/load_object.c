@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:46 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/28 16:34:54 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/03 17:34:21 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,20 @@
 
 static void	free_object_ressources(t_context *ctx)
 {
-	int i;
+	int 		i;
+	t_object	*obj;
 
 	print_opengl_error("Before freeing object ressources");
 	i = -1;
 	while (++i < ctx->nb_objects)
 	{
-		free(ctx->objects[i].faces);
-		free(ctx->objects[i].vertexes);
-		free(ctx->objects[i].tex_coords);
-		glDeleteVertexArrays(1, &ctx->objects[i].vertex_array);
-		glDeleteBuffers(2, ctx->objects[i].vertex_buffers);
+		obj = &ctx->objects[i];
+		free(obj->faces);
+		free(obj->vertexes);
+		free(obj->tex_coords);
+		glDeleteVertexArrays(1, &obj->vertex_array);
+		glDeleteBuffers(2, obj->vertex_buffers);
 	}
-	//free(ctx->objects);
 	print_opengl_error("After freeing object ressources");
 }
 
@@ -47,7 +48,7 @@ void	open_file_chooser(t_context *ctx)
 	{
 		filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(chooser));
 		free_object_ressources(ctx);
-		load_object_from_file(ctx->objects, ctx, filename);
+		load_object_from_file(ctx->objects, ctx, filename, ctx->text_name);
 		g_free(filename);
 	}
 	gdk_frame_clock_begin_updating(ctx->clock);
@@ -74,8 +75,10 @@ void	init_object(t_context *ctx, t_object *obj)
 	obj->dimensions = (t_vec3) {1.0f, 1.0f, 1.0f};
 	init_identity_matrix(&obj->rotation_matrix);
 	init_identity_matrix(&obj->model_matrix);
-	obj->min_coords = (t_vec3) { INFINITY, INFINITY, INFINITY};
-	obj->max_coords = (t_vec3) { -INFINITY, -INFINITY, -INFINITY};
+	obj->min_coords = (t_vec3) {INFINITY, INFINITY, INFINITY};
+	obj->max_coords = (t_vec3) {-INFINITY, -INFINITY, -INFINITY};
+	obj->mvp_handle = glGetUniformLocation(ctx->prog_object, "model_view_projection_mat");
+	glGenTextures(1, &obj->texture);
 }
 
 void	load_obj_into_opengl(t_context *ctx, t_object *obj)
@@ -126,17 +129,10 @@ static void	set_inital_object_size_and_pos(t_context *ctx, t_object *obj)
 		obj->vertexes[i].z -= obj->center.z;
 		i++;
 	}
-	printf("min coord:\n");
-	print_vec(&obj->min_coords);
-	printf("max coord:\n");
-	print_vec(&obj->max_coords);
-	printf("center:\n");
-	print_vec(&obj->center);
-	printf("scale: %.4f\n", scale);
 	print_opengl_error("After setting inital object size and pos");
 }
 
-void	load_object_from_file(t_object *obj_ret, t_context *ctx, const char *filename)
+void	load_object_from_file(t_object *obj_ret, t_context *ctx, const char *filename, const char *tex_name)
 {
 	int			ret;
 	char		*line;
@@ -162,4 +158,7 @@ void	load_object_from_file(t_object *obj_ret, t_context *ctx, const char *filena
 	printf("nb vertexes: %lu\n", obj_ret->nb_vertexes);
 	printf("nb faces: %lu\n", obj_ret->nb_faces);
 	load_obj_into_opengl(ctx, obj_ret);
+	if (tex_name)
+		load_bmp_into_opengl(ctx, obj_ret, tex_name);
+	printf("Loaded object %s\n", filename);
 }

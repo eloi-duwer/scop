@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:34 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/28 16:09:57 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/03 17:06:23 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,14 +69,13 @@ void		free_mbp(t_bmp_ctx *bmp)
 	free(bmp->data);
 }
 
-void		load_bmp_into_opengl(t_context *ctx, char *filename)
+void		load_bmp_into_opengl(t_context *ctx, t_object *obj, const char *filename)
 {
 	t_bmp_ctx	bmp;
 
 	print_opengl_error("Before loading bmp texture");
 	load_bmp(ctx, &bmp, filename);
-	glGenTextures(1, &ctx->objects[0].texture);
-	glBindTexture(GL_TEXTURE_2D, ctx->objects[0].texture);
+	glBindTexture(GL_TEXTURE_2D, obj->texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bmp.img_width, bmp.img_height, 0, \
 		GL_BGR, GL_UNSIGNED_BYTE, bmp.data);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

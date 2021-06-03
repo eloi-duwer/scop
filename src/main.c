@@ -6,11 +6,14 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:15 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/27 23:57:22 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/03 17:14:19 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <scop.h>
+
+char	*g_default_obj = "./models/42.obj";
+char	*g_default_tex = "./textures/unicorn_pattern.bmp";
 
 static gboolean frame_update(GdkFrameClock *clock, GtkGLArea *gl_area)
 {
@@ -87,11 +90,11 @@ int main(int argc, char **argv)
 	if (argc >= 2)
 		ctx.filename = argv[1];
 	else
-		ctx.filename = NULL;
+		ctx.filename = g_default_obj;
 	if (argc >= 3)
 		ctx.text_name = argv[2];
 	else
-		ctx.text_name = NULL;
+		ctx.text_name = g_default_tex;
 	g_signal_connect(app, "activate", G_CALLBACK(on_app_activate), &ctx);
 	exit_status = g_application_run(G_APPLICATION(app), 0, NULL);
 	g_object_unref(app);

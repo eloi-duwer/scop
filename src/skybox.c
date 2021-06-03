@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 00:06:16 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/28 01:31:07 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/03 17:04:17 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	load_skybox_into_opengl(t_context *ctx)
 
 static void load_skybox_cube(t_context *ctx)
 {
-	load_object_from_file(&ctx->skybox, ctx, "./models/cube.obj");
+	load_object_from_file(&ctx->skybox, ctx, "./models/cube.obj", NULL);
 }
 
 static void	reverse_bmp(t_bmp_ctx *bmp)
@@ -57,8 +57,7 @@ static void	load_skybox_texture(t_context *ctx)
 {
 	t_bmp_ctx	bmp;
 
-	glGenTextures(1, &ctx->tex_skybox);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, ctx->tex_skybox);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, ctx->skybox.texture);
 	for (int i = 0; i < 6; i++)
 	{
 		load_bmp(ctx, &bmp, g_skybox_files[i]);

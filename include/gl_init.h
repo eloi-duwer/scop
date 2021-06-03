@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 13:37:24 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/26 02:50:48 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/03 17:19:18 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@
 # define GL_ARRAY_BUFFER				0x8892
 # define GL_ELEMENT_ARRAY_BUFFER		0x8893
 # define GL_STATIC_DRAW					0x88E4
+# define GL_DYNAMIC_DRAW				0x88E8
 
 # define GL_FRAGMENT_SHADER				0x8B30
 # define GL_VERTEX_SHADER				0x8B31

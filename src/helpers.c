@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:27 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/28 01:45:10 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/03 17:00:27 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,8 @@ void	init_opengl(t_context *ctx)
 	ctx->max_pos_handle = glGetUniformLocation(ctx->prog_object, "max_coord");
 	glEnable(GL_DEPTH_TEST);
 	print_opengl_error("Before loading file");
-	if (ctx->filename)
-		load_object_from_file(ctx->objects, ctx, ctx->filename);
-	else
-		load_object_from_file(ctx->objects, ctx, "./models/42.obj");
-	if (ctx->text_name != NULL)
-		load_bmp_into_opengl(ctx, ctx->text_name);
-	else
-		load_bmp_into_opengl(ctx, "./textures/unicorn_pattern.bmp");
+	load_object_from_file(ctx->objects, ctx, ctx->filename, ctx->text_name);
 	load_skybox_into_opengl(ctx);
-	ctx->objects[0].mvp_handle = glGetUniformLocation(ctx->prog_object, "model_view_projection_mat");
 	ctx->skybox.mvp_handle = glGetUniformLocation(ctx->prog_skybox, "view_projection_mat");
 }
 
