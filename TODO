@@ -1,5 +1,2 @@
-- Ajouter des lignes/fleches centrées en 0 0 0 pour bien voir l'objet bouger + angle de la cam
-- Parser les vertex normal(osef) + texture coords(pas osef) (vn et vt dans les objets)
-- Cycler entre les textures ?
+- Parser les texture coords (vt dans les objets)
 - Permettre de swapper les coords x y et z (arg en paramètre ? rotation = 0/1/2 ?)
-- Plein de trucs cools en + ?
