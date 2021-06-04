@@ -8,7 +8,7 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <time.h>
-# define BUFF_SIZE 1000
+# define BUFF_SIZE 10000
 # define NB_DISPLAY_MODES 4
 # define M_PI 3.14159265358979323846
 
@@ -20,16 +20,16 @@ typedef struct	s_vec3 {
 	float		x;
 	float		y;
 	float		z;
-}				t_vec3;
+} __attribute__((packed))	t_vec3;
 
 typedef struct	s_vec2 {
 	float		x;
 	float		y;
-}				t_vec2;
+} __attribute__((packed))	t_vec2;
 
 typedef struct	s_triangle {
 	uint32_t	points[3];
-}				t_triangle;
+} __attribute__((packed))	t_triangle;
 
 typedef struct	s_buff_tri {
 	uint64_t	size;
@@ -49,11 +49,18 @@ typedef struct	s_buff_vec3 {
 	t_vec3		*b;
 }				t_buff_vec3;
 
+typedef struct	s_buff_float {
+	uint64_t	size;
+	uint64_t	nbel;
+	float		*b;
+}				t_buff_float;
+
 typedef struct	s_object {
 	t_buff_tri	faces;
 	t_buff_tri	faces_tex;
 	t_buff_vec3	vertexes;
 	t_buff_vec2	tex_coords;	
+	int			has_tex_coords;
 	t_vec3		center;
 	t_vec3		world_position;
 	t_vec3		dimensions;
@@ -65,7 +72,7 @@ typedef struct	s_object {
 	GLuint		mvp_handle;
 	GLuint		texture;
 	GLuint		vertex_array;
-	GLuint		vertex_buffers[2];
+	GLuint		vertex_buffers[3];
 }				t_object;
 
 typedef struct	s_camera {
@@ -150,6 +157,7 @@ void		check_size_buff_vec3(t_context *ctx, t_buff_vec3 *buff_vec3);
 void		open_file_chooser(t_context *ctx);
 void		load_object_from_file(t_object *obj_ret, t_context *ctx, const char *filename, const char *tex_name);
 void		parse_line(t_context *ctx, t_object *obj, char *line, int line_nb);
+void		reconstruct_index_object(t_context *ctx, t_object *obj);
 void		free_string_tab(char **str);
 void		print_face_indexes(t_triangle *faces, int nb_faces);
 void		print_face_coords(t_object *obj);

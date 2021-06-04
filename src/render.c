@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 00:59:54 by eduwer            #+#    #+#             */
-/*   Updated: 2021/06/04 00:04:04 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/04 22:57:54 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,17 @@ static void	render_obj(t_context *ctx, t_object *obj)
 	glBindBuffer(GL_ARRAY_BUFFER, obj->vertex_buffers[0]);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, obj->vertex_buffers[1]);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+	if (obj->has_tex_coords)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, obj->vertex_buffers[2]);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void *)0);
+	}
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, obj->texture);
 	glDepthFunc(GL_LESS);
 	glUniform3f(ctx->min_pos_handle, obj->min_coords.x, obj->min_coords.y, obj->min_coords.z);
 	glUniform3f(ctx->max_pos_handle, obj->max_coords.x, obj->max_coords.y, obj->max_coords.z);
-	glUniform1i(ctx->has_uv_coords, GL_FALSE);
+	glUniform1i(ctx->has_uv_coords, obj->has_tex_coords);
 	glUniform1ui(ctx->frames, gdk_frame_clock_get_frame_counter(ctx->clock));
 	glUniform1f(ctx->display_mode_handle, ctx->display_current);
 	construct_model_matrix(ctx, obj, 0);

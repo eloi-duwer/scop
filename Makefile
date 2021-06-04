@@ -4,14 +4,15 @@ SRC_NAME = main.c \
 	matrix/matrix.c \
 	matrix/matrix_operations.c \
 	matrix/rotation_matrix.c \
+	obj_load/load_object.c \
+	obj_load/parse_object.c \
+	obj_load/reconstruct_index_object.c \
 	print_funcs.c \
-	load_object.c \
 	event_handling.c \
 	load_bmp.c \
 	load_opengl_funcs.c \
 	skybox.c \
-	render.c \
-	parse_object.c
+	render.c
 
 NAME = scop
 

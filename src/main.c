@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:15 by eduwer            #+#    #+#             */
-/*   Updated: 2021/06/03 17:14:19 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/04 13:20:33 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ int main(int argc, char **argv)
 	GtkApplication	*app;
 	int				exit_status;
 
+	setlocale(LC_NUMERIC, "en-US");
 	if (argc == 2 && ft_strcmp(argv[1], "-h") == 0)
 		return (print_help());
 	load_opengl_funcs();

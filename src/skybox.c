@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 00:06:16 by eduwer            #+#    #+#             */
-/*   Updated: 2021/06/03 17:04:17 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/04 23:03:06 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ static const char	*g_skybox_files[6] = {
 
 void	load_skybox_into_opengl(t_context *ctx)
 {
+	glUseProgram(ctx->prog_skybox);
 	load_skybox_cube(ctx);
 	load_skybox_texture(ctx);
 }

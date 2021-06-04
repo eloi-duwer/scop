@@ -81,7 +81,7 @@ vec3 get_texture_color()
 	if (has_uv_coords)
 		uvPos = texCoord;
 	else
-		uvPos = inv_lerp(vertexPos, min_coord, max_coord, vec3(0, 0, 0), vec3(1, 1, 1)).xy;
+		uvPos = vertexPos.yz;
 	return interpolate_color_around_center(
 		texture(textureSampler, uvPos).rgb,
 		1,

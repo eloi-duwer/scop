@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:27 by eduwer            #+#    #+#             */
-/*   Updated: 2021/06/03 23:42:45 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/04 23:03:21 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	init_opengl(t_context *ctx)
 	ctx->max_pos_handle = glGetUniformLocation(ctx->prog_object, "max_coord");
 	glEnable(GL_DEPTH_TEST);
 	print_opengl_error("Before loading file");
+	glUseProgram(ctx->prog_object);
 	load_object_from_file(ctx->objects, ctx, ctx->filename, ctx->text_name);
 	load_skybox_into_opengl(ctx);
 	ctx->skybox.mvp_handle = glGetUniformLocation(ctx->prog_skybox, "view_projection_mat");

@@ -1,2 +1,0 @@
-- Parser les texture coords (vt dans les objets)
-- Permettre de swapper les coords x y et z (arg en paramètre ? rotation = 0/1/2 ?)
