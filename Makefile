@@ -53,4 +53,6 @@ fclean: clean
 re: fclean all
 
 gtk:
-	cd gtk && tar -xf gtk+-3.24.29.tar.xz && cd gtk+-3.24.29 && ./configure && make && make install
+	cd gtk && tar -xf gtk+-3.24.29.tar.xz && cd gtk+-3.24.29 && ./configure && sudo make && sudo make install
+
+.PHONY: gtk

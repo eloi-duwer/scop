@@ -7,3 +7,4 @@ libs
 .vs
 .vscode
 lib/gtk+-3.24.29
+gtk/gtk+-3.24.29/

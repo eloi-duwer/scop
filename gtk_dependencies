@@ -1,0 +1,13 @@
+To install GTK from the .tar included in this project, you need the following developpement libraries:
+
+libglib2.0-dev
+libatk1.0-dev
+libsdl-pango-dev
+libgdk-pixbuf2.0-dev
+libxi-dev
+libepoxy-dev
+libatk-bridge2.0-dev
+
+OR alternatively you can just install gtk with your package manager:
+sudo apt-get install libgtk-3-dev
+sudo dnf install gtk3-devel
