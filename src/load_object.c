@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:46 by eduwer            #+#    #+#             */
-/*   Updated: 2021/06/03 17:34:21 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/04 02:35:43 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ static void	free_object_ressources(t_context *ctx)
 	while (++i < ctx->nb_objects)
 	{
 		obj = &ctx->objects[i];
-		free(obj->faces);
-		free(obj->vertexes);
-		free(obj->tex_coords);
+		free(obj->faces.b);
+		free(obj->vertexes.b);
+		free(obj->tex_coords.b);
 		glDeleteVertexArrays(1, &obj->vertex_array);
 		glDeleteBuffers(2, obj->vertex_buffers);
 	}
@@ -58,18 +58,10 @@ void	open_file_chooser(t_context *ctx)
 void	init_object(t_context *ctx, t_object *obj)
 {
 	ft_bzero(obj, sizeof(t_object));
-	if ((obj->faces = (t_triangle *)malloc(sizeof(t_triangle) * BUFF_SIZE)) == NULL)
-		print_error(ctx, "Error on malloc\n");
-	obj->size_faces = BUFF_SIZE;
-	obj->nb_faces = 0;
-	if ((obj->vertexes = (t_vec3 *)malloc(sizeof(t_vec3) * BUFF_SIZE)) == NULL)
-		print_error(ctx, "Error on malloc\n");
-	obj->size_vertexes = BUFF_SIZE;
-	obj->nb_vertexes = 0;
-	if ((obj->tex_coords = (t_vec2 *)malloc(sizeof(t_vec2) * BUFF_SIZE)) == NULL)
-		print_error(ctx, "Error on malloc\n");
-	obj->size_tex_coords = BUFF_SIZE;
-	obj->nb_tex_coords = 0;
+	ft_bzero(&obj->faces, sizeof(t_buff_tri));
+	ft_bzero(&obj->vertexes, sizeof(t_buff_vec3));
+	ft_bzero(&obj->tex_coords, sizeof(t_buff_vec2));
+	ft_bzero(&obj->faces_tex, sizeof(t_buff_tri));
 	obj->center = (t_vec3) {0.0, 0.0, 0.0};
 	obj->world_position = (t_vec3) {0.0, 0.0, 0.0};
 	obj->dimensions = (t_vec3) {1.0f, 1.0f, 1.0f};
@@ -81,6 +73,23 @@ void	init_object(t_context *ctx, t_object *obj)
 	glGenTextures(1, &obj->texture);
 }
 
+void	reorder_tex_indices(t_context *ctx, t_object *obj)
+{
+	t_buff_vec2 new_tex_coords;
+	uint32_t	i;
+
+	if ((new_tex_coords.b = (t_vec2 *)malloc(sizeof (t_vec2) * obj->tex_coords.nbel)) == NULL)
+		print_error(ctx, "Error: Malloc returned NULL");
+	i = 0;
+	while (i < obj->faces_tex.nbel) //IM NOT SURE ABOUT THAT, WHAT IF IT IS OUT OF BOUNDS?
+	{
+		ft_memcpy(&new_tex_coords.b[obj->faces.b[i].points[0]], &obj->tex_coords.b[obj->faces_tex.b[i].points[0]], sizeof(t_vec2));
+		ft_memcpy(&new_tex_coords.b[obj->faces.b[i].points[1]], &obj->tex_coords.b[obj->faces_tex.b[i].points[1]], sizeof(t_vec2));
+		ft_memcpy(&new_tex_coords.b[obj->faces.b[i].points[2]], &obj->tex_coords.b[obj->faces_tex.b[i].points[2]], sizeof(t_vec2));		
+		i++;
+	}
+}
+
 void	load_obj_into_opengl(t_context *ctx, t_object *obj)
 {
 	print_opengl_error("Before loading object");
@@ -88,17 +97,17 @@ void	load_obj_into_opengl(t_context *ctx, t_object *obj)
 	glBindVertexArray(obj->vertex_array);
 	glGenBuffers(2, obj->vertex_buffers);
 	glBindBuffer(GL_ARRAY_BUFFER, obj->vertex_buffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj->nb_vertexes, \
-		obj->vertexes, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(t_vec3) * obj->vertexes.nbel, \
+		obj->vertexes.b, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, obj->vertex_buffers[1]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(t_triangle) * obj->nb_faces, \
-		obj->faces, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(t_triangle) * obj->faces.nbel, \
+		obj->faces.b, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-	free(obj->vertexes);
-	free(obj->faces);
-	obj->vertexes = NULL;
-	obj->faces = NULL;
+	free(obj->vertexes.b);
+	free(obj->faces.b);
+	obj->vertexes.b = NULL;
+	obj->faces.b = NULL;
 	print_opengl_error("After loading object");
 }
 
@@ -122,11 +131,11 @@ static void	set_inital_object_size_and_pos(t_context *ctx, t_object *obj)
 	obj->max_coords.y -= obj->center.y;
 	obj->max_coords.z -= obj->center.z;
 	i = 0;
-	while (i < obj->nb_vertexes)
+	while (i < obj->vertexes.nbel)
 	{
-		obj->vertexes[i].x -= obj->center.x;
-		obj->vertexes[i].y -= obj->center.y;
-		obj->vertexes[i].z -= obj->center.z;
+		obj->vertexes.b[i].x -= obj->center.x;
+		obj->vertexes.b[i].y -= obj->center.y;
+		obj->vertexes.b[i].z -= obj->center.z;
 		i++;
 	}
 	print_opengl_error("After setting inital object size and pos");
@@ -155,8 +164,8 @@ void	load_object_from_file(t_object *obj_ret, t_context *ctx, const char *filena
 	free(line);
 	close(fd);
 	set_inital_object_size_and_pos(ctx, obj_ret);
-	printf("nb vertexes: %lu\n", obj_ret->nb_vertexes);
-	printf("nb faces: %lu\n", obj_ret->nb_faces);
+	printf("nb vertexes: %lu\n", obj_ret->vertexes.nbel);
+	printf("nb faces: %lu\n", obj_ret->faces.nbel);
 	load_obj_into_opengl(ctx, obj_ret);
 	if (tex_name)
 		load_bmp_into_opengl(ctx, obj_ret, tex_name);

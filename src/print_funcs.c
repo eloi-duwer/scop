@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:51 by eduwer            #+#    #+#             */
-/*   Updated: 2021/06/03 17:23:44 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/04 02:29:13 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	print_face_indexes(t_triangle *faces, int nb_faces)
 	int	i;
 
 	i = -1;
-	printf("faces (%p)\n", faces);
+	printf("faces\n");
 	while (++i < nb_faces)
 	{
 		printf("\t%u %u %u\n", faces[i].points[0], faces[i].points[1], \
@@ -36,15 +36,15 @@ void	print_face_coords(t_object *obj)
 
 	printf("faces coords\n");
 	i = 0;
-	while (i < obj->nb_faces)
+	while (i < obj->faces.nbel)
 	{
 		printf("Face %lu:\n", i);
 		printf("\t");
-		print_vec(&obj->vertexes[obj->faces[i].points[0]]);
+		print_vec(&obj->vertexes.b[obj->faces.b[i].points[0]]);
 		printf("\t");
-		print_vec(&obj->vertexes[obj->faces[i].points[1]]);
+		print_vec(&obj->vertexes.b[obj->faces.b[i].points[1]]);
 		printf("\t");
-		print_vec(&obj->vertexes[obj->faces[i].points[2]]);
+		print_vec(&obj->vertexes.b[obj->faces.b[i].points[2]]);
 		i++;
 	}
 }

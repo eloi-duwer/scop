@@ -5,8 +5,10 @@ uniform sampler2D textureSampler;
 uniform float display_percent;
 uniform vec3 min_coord;
 uniform	vec3 max_coord;
+uniform bool has_uv_coords;
 
 in vec3 vertexPos;
+in vec2 texCoord;
 
 out vec3 color;
 
@@ -75,8 +77,13 @@ vec3 get_texture_color()
 	if (display_percent > 2)
 		return vec3(0, 0, 0);
 
+	vec2 uvPos;
+	if (has_uv_coords)
+		uvPos = texCoord;
+	else
+		uvPos = inv_lerp(vertexPos, min_coord, max_coord, vec3(0, 0, 0), vec3(1, 1, 1)).xy;
 	return interpolate_color_around_center(
-		texture(textureSampler, /*inv_lerp(*/vertexPos/*, min_coord, max_coord, vec3(0, 0, 0), vec3(1, 1, 1))*/.xy).rgb,
+		texture(textureSampler, uvPos).rgb,
 		1,
 		display_percent
 	);

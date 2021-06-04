@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 00:59:54 by eduwer            #+#    #+#             */
-/*   Updated: 2021/06/03 20:22:19 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/04 00:04:04 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static void	render_obj(t_context *ctx, t_object *obj)
 	mat4x4_mult(&obj->mvp_matrix, &ctx->cam.projection_matrix, &obj->mvp_matrix);
 	glUniformMatrix4fv(obj->mvp_handle, 1, GL_TRUE, &obj->mvp_matrix.mat[0][0]);
 	print_opengl_error("before drawElements object");
-	glDrawElements(GL_TRIANGLES, obj->nb_faces * 3, GL_UNSIGNED_INT, (void *)0);
+	glDrawElements(GL_TRIANGLES, obj->faces.nbel * 3, GL_UNSIGNED_INT, (void *)0);
 	glBindVertexArray(0);
 	print_opengl_error("after drawElements object");
 }
@@ -75,7 +75,7 @@ static void	render_skybox(t_context *ctx, t_object *skybox)
 	mat4x4_mult(&skybox->mvp_matrix, &ctx->cam.projection_matrix, &skybox->mvp_matrix);
 	glUniformMatrix4fv(skybox->mvp_handle, 1, GL_TRUE, &skybox->mvp_matrix.mat[0][0]);
 	print_opengl_error("before drawElements skybox");
-	glDrawElements(GL_TRIANGLES, skybox->nb_faces * 3, GL_UNSIGNED_INT, (void *)0);
+	glDrawElements(GL_TRIANGLES, skybox->faces.nbel * 3, GL_UNSIGNED_INT, (void *)0);
 	glBindVertexArray(0);
 	print_opengl_error("After rendering skybox");
 }

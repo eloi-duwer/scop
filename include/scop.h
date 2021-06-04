@@ -8,9 +8,9 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <time.h>
-# include <math.h>
 # define BUFF_SIZE 1000
 # define NB_DISPLAY_MODES 4
+# define M_PI 3.14159265358979323846
 
 typedef struct	s_mat4x4 {
 	float		mat[4][4];
@@ -31,16 +31,29 @@ typedef struct	s_triangle {
 	uint32_t	points[3];
 }				t_triangle;
 
+typedef struct	s_buff_tri {
+	uint64_t	size;
+	uint64_t	nbel;
+	t_triangle	*b;
+}				t_buff_tri;
+
+typedef struct	s_buff_vec2 {
+	uint64_t	size;
+	uint64_t	nbel;
+	t_vec2		*b;
+}				t_buff_vec2;
+
+typedef struct	s_buff_vec3 {
+	uint64_t	size;
+	uint64_t	nbel;
+	t_vec3		*b;
+}				t_buff_vec3;
+
 typedef struct	s_object {
-	uint64_t	nb_faces;
-	uint64_t	size_faces;
-	t_triangle	*faces;
-	uint64_t	nb_vertexes;
-	uint64_t	size_vertexes;
-	t_vec3		*vertexes;
-	uint64_t	nb_tex_coords;
-	uint64_t	size_tex_coords;
-	t_vec2		*tex_coords;
+	t_buff_tri	faces;
+	t_buff_tri	faces_tex;
+	t_buff_vec3	vertexes;
+	t_buff_vec2	tex_coords;	
 	t_vec3		center;
 	t_vec3		world_position;
 	t_vec3		dimensions;
@@ -84,8 +97,8 @@ typedef struct	s_context {
 	GLuint			has_uv_coords;
 	GLuint			min_pos_handle;
 	GLuint			max_pos_handle;
-	char		*filename;
-	char		*text_name;
+	char			*filename;
+	char			*text_name;
 	gdouble			screen_cursor_x;
 	gdouble			screen_cursor_y;
 	gdouble			window_cursor_x;
@@ -131,6 +144,9 @@ void		rotation_matrix_z(t_mat4x4 *mat, float angle);
 void		rotation_vec_y(t_vec3 *vec, float angle);
 void		rotation_around_axis(t_mat4x4 *mat, t_vec3 *a, double angle);
 void		rotation_around_axis_vec(t_vec3 *inout, t_vec3 *a, double angle);
+void		check_size_buff_tri(t_context *ctx, t_buff_tri *buff_tri);
+void		check_size_buff_vec2(t_context *ctx, t_buff_vec2 *buff_vec2);
+void		check_size_buff_vec3(t_context *ctx, t_buff_vec3 *buff_vec3);
 void		open_file_chooser(t_context *ctx);
 void		load_object_from_file(t_object *obj_ret, t_context *ctx, const char *filename, const char *tex_name);
 void		parse_line(t_context *ctx, t_object *obj, char *line, int line_nb);

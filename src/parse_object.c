@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 03:01:31 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/28 16:29:08 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/04 02:29:52 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,85 +14,84 @@
 
 static void	check_size_object(t_object *obj, int vertex_index)
 {
-	if (obj->vertexes[vertex_index].x > obj->max_coords.x)
-		obj->max_coords.x = obj->vertexes[vertex_index].x;
-	else if (obj->vertexes[vertex_index].x < obj->min_coords.x)
-		obj->min_coords.x = obj->vertexes[vertex_index].x;
-	if (obj->vertexes[vertex_index].y > obj->max_coords.y)
-		obj->max_coords.y = obj->vertexes[vertex_index].y;
-	else if (obj->vertexes[vertex_index].y < obj->min_coords.y)
-		obj->min_coords.y = obj->vertexes[vertex_index].y;
-	if (obj->vertexes[vertex_index].z > obj->max_coords.z)
-		obj->max_coords.z = obj->vertexes[vertex_index].z;
-	else if (obj->vertexes[vertex_index].z < obj->min_coords.z)
-		obj->min_coords.z = obj->vertexes[vertex_index].z;
+	if (obj->vertexes.b[vertex_index].x > obj->max_coords.x)
+		obj->max_coords.x = obj->vertexes.b[vertex_index].x;
+	else if (obj->vertexes.b[vertex_index].x < obj->min_coords.x)
+		obj->min_coords.x = obj->vertexes.b[vertex_index].x;
+	if (obj->vertexes.b[vertex_index].y > obj->max_coords.y)
+		obj->max_coords.y = obj->vertexes.b[vertex_index].y;
+	else if (obj->vertexes.b[vertex_index].y < obj->min_coords.y)
+		obj->min_coords.y = obj->vertexes.b[vertex_index].y;
+	if (obj->vertexes.b[vertex_index].z > obj->max_coords.z)
+		obj->max_coords.z = obj->vertexes.b[vertex_index].z;
+	else if (obj->vertexes.b[vertex_index].z < obj->min_coords.z)
+		obj->min_coords.z = obj->vertexes.b[vertex_index].z;
 }
 
 void	add_vertice(t_context *ctx, t_object *obj, char **line, int line_nb)
 {
-	t_vec3	*new_vertexes;
-
-	if (obj->nb_vertexes == obj->size_vertexes)
-	{
-		if (!(new_vertexes = (t_vec3 *)realloc(obj->vertexes, \
-			sizeof(t_vec3) * (obj->nb_vertexes + BUFF_SIZE))))
-			print_error(ctx, "Realloc returned NULL\n");
-		obj->vertexes = new_vertexes;
-		obj->size_vertexes += BUFF_SIZE;
-	}
+	check_size_buff_vec3(ctx, &obj->vertexes);
 	if (!line[1] || !line[2] || !line[3])
 		print_error(ctx, "Line %d: The vertex line don't have 3 coordinates\n", line_nb);
 	setlocale(LC_NUMERIC, "en-US");
-	obj->vertexes[obj->nb_vertexes].x = strtof(line[1], NULL);
-	obj->vertexes[obj->nb_vertexes].y = strtof(line[2], NULL);
-	obj->vertexes[obj->nb_vertexes].z = strtof(line[3], NULL);
-	check_size_object(obj, obj->nb_vertexes);
-	++(obj->nb_vertexes);
+	obj->vertexes.b[obj->vertexes.nbel].x = strtof(line[1], NULL);
+	obj->vertexes.b[obj->vertexes.nbel].y = strtof(line[2], NULL);
+	obj->vertexes.b[obj->vertexes.nbel].z = strtof(line[3], NULL);
+	check_size_object(obj, obj->vertexes.nbel);
+	obj->vertexes.nbel++;
+}
+
+void	parse_face(char *face, uint32_t	*face_index, uint32_t *tex_index, int *has_tex)
+{
+	char **splitted;
+
+	splitted = ft_strsplit(face, '/');
+	if (!splitted[1])
+		*has_tex = 0;
+	else
+	{
+		*has_tex = 1;
+		*tex_index = ft_atoi(splitted[1]) - 1;
+	}
+	*face_index = ft_atoi(splitted[0]) - 1;
+	free(splitted);
 }
 
 void	add_face(t_context *ctx, t_object *obj, char **line, int line_nb)
 {
 	int			i;
-	uint32_t	indexes[3];
-	t_triangle	*new_triangles;
+	uint32_t	index_face[3];
+	int			has_tex;
+	uint32_t	index_tex[3];
 
 	if (!line[1] || !line[2] || !line[3])
 		print_error(ctx, "Line %d: The face must have at least 3 points\n");
-	indexes[0] = ft_atoi(line[1]) - 1;
-	indexes[1] = ft_atoi(line[2]) - 1;
+	parse_face(line[1], index_face, index_tex, &has_tex);
+	parse_face(line[2], index_face + 1, index_tex + 1, &has_tex);
 	i = 3;
 	while (line[i])
 	{
-		if (obj->nb_faces == obj->size_faces)
+		check_size_buff_tri(ctx, &obj->faces);
+		parse_face(line[i], index_face + 2, index_tex + 2, &has_tex);
+		ft_memcpy(&obj->faces.b[obj->faces.nbel], index_face, sizeof(uint32_t) * 3);
+		if (has_tex)
 		{
-			if (!(new_triangles = (t_triangle *)realloc(obj->faces, \
-				sizeof(t_triangle) * (obj->nb_faces + BUFF_SIZE))))
-				print_error(ctx, "Realloc returned NULL\n");
-			obj->faces = new_triangles;
-			obj->size_faces += BUFF_SIZE;
+			check_size_buff_tri(ctx, &obj->faces_tex);
+			ft_memcpy(&obj->faces_tex.b[obj->faces_tex.nbel], index_tex, sizeof(uint32_t) * 3);
 		}
-		indexes[2] = ft_atoi(line[i]) - 1;
-		ft_memcpy(&obj->faces[obj->nb_faces], indexes, sizeof(uint32_t) * 3);
-		indexes[1] = indexes[2];
-		++i;
-		++(obj->nb_faces);
+		index_face[1] = index_face[2];
+		index_tex[1] = index_tex[2];
+		i++;
+		obj->faces.nbel++;
 	}
 }
 
 void	add_tex_coord(t_context *ctx, t_object *obj, char **line, int line_nb)
 {
-	t_vec2	*new_texutre_coords;
-
-	if (obj->nb_tex_coords == obj->size_tex_coords)
-	{
-		if (!(new_texutre_coords = (t_vec2 *)realloc(obj->tex_coords, \
-			sizeof(t_vec2) * (obj->nb_tex_coords + BUFF_SIZE))))
-			print_error(ctx, "Realloc returned NULL\n");
-		obj->tex_coords = new_texutre_coords;
-		obj->size_tex_coords += BUFF_SIZE;
-	}
-	obj->tex_coords[obj->nb_tex_coords].x = strtof(line[1], NULL);
-	obj->tex_coords[obj->nb_tex_coords].y = strtof(line[2], NULL);
+	check_size_buff_vec2(ctx, &obj->tex_coords);
+	obj->tex_coords.b[obj->tex_coords.nbel].x = strtof(line[1], NULL);
+	obj->tex_coords.b[obj->tex_coords.nbel].y = strtof(line[2], NULL);
+	obj->tex_coords.nbel++;
 }
 
 void	parse_line(t_context *ctx, t_object *obj, char *line, int line_nb)

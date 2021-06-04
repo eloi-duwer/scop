@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:27 by eduwer            #+#    #+#             */
-/*   Updated: 2021/06/03 17:00:27 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/03 23:42:45 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,46 @@ void	print_opengl_error(const char *str)
 double	to_deg(double rad)
 {
 	return (rad * 180) / M_PI;
+}
+
+void	check_size_buff_tri(t_context *ctx, t_buff_tri *buff_tri)
+{
+	t_triangle *new_triangles;
+
+	if (buff_tri->nbel == buff_tri->size)
+	{
+		if (!(new_triangles = (t_triangle *)realloc(buff_tri->b, \
+			sizeof(t_triangle) * (buff_tri->nbel + BUFF_SIZE))))
+			print_error(ctx, "Realloc returned NULL\n");
+		buff_tri->b = new_triangles;
+		buff_tri->size += BUFF_SIZE;
+	}
+}
+
+void	check_size_buff_vec2(t_context *ctx, t_buff_vec2 *buff_vec2)
+{
+	t_vec2 *new_vec2;
+
+	if (buff_vec2->nbel == buff_vec2->size)
+	{
+		if (!(new_vec2 = (t_vec2 *)realloc(buff_vec2->b, \
+			sizeof(t_vec2) * (buff_vec2->nbel + BUFF_SIZE))))
+			print_error(ctx, "Realloc returned NULL\n");
+		buff_vec2->b = new_vec2;
+		buff_vec2->size += BUFF_SIZE;
+	}
+}
+
+void	check_size_buff_vec3(t_context *ctx, t_buff_vec3 *buff_vec3)
+{
+	t_vec3 *new_vec3;
+
+	if (buff_vec3->nbel == buff_vec3->size)
+	{
+		if (!(new_vec3 = (t_vec3 *)realloc(buff_vec3->b, \
+			sizeof(t_vec3) * (buff_vec3->nbel + BUFF_SIZE))))
+			print_error(ctx, "Realloc returned NULL\n");
+		buff_vec3->b = new_vec3;
+		buff_vec3->size += BUFF_SIZE;
+	}
 }
