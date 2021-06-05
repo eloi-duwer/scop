@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:46 by eduwer            #+#    #+#             */
-/*   Updated: 2021/06/04 23:09:57 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/05 09:50:26 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ void	load_object_from_file(t_object *obj_ret, t_context *ctx, const char *filena
 	int			line_nb;
 	int			fd;
 
+	setlocale(LC_ALL, "C.UTF-8");
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		print_error(ctx, "Cannot open the file %s\n", filename);
