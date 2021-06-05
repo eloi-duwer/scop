@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:21 by eduwer            #+#    #+#             */
-/*   Updated: 2021/05/25 23:40:18 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/05 09:29:24 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,11 @@ gboolean	button_press(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 		seat = gdk_display_get_default_seat(display);
 		if (ctx->rotating)
 		{
-			gdk_seat_grab(seat, ctx->window, GDK_SEAT_CAPABILITY_ALL_POINTING, TRUE, gdk_cursor_new_for_display(display, GDK_BLANK_CURSOR), event, NULL, NULL);
+			gdk_seat_grab(seat, ctx->window, GDK_SEAT_CAPABILITY_ALL_POINTING, TRUE, gdk_cursor_new_for_display(display, GDK_LAST_CURSOR), event, NULL, NULL);
 			gdk_device_get_position_double(gdk_seat_get_pointer(seat), NULL, pos_cursor, pos_cursor + 1);
 			gdk_window_get_position(ctx->window, pos_win, pos_win + 1);
-			ctx->screen_cursor_x = pos_cursor[0];
-			ctx->screen_cursor_y = pos_cursor[1];
-			ctx->window_cursor_x = pos_cursor[0] - pos_win[0];
-			ctx->window_cursor_y = pos_cursor[1] - pos_win[1];
+			ctx->last_cursor_x = pos_cursor[0] - pos_win[0];
+			ctx->last_cursor_y = pos_cursor[1] - pos_win[1];
 		}
 		else
 			gdk_seat_ungrab(gdk_display_get_default_seat(display));
@@ -93,23 +91,24 @@ gboolean	button_press(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 	return (TRUE);
 }
 
+#include <gdk/gdkwayland.h>
+
 gboolean	mouse_motion(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 {
 	GdkEventMotion	*e;
-	GdkDevice		*device;
 	double			prev_angle;
 
 	e = (GdkEventMotion *)event;
-	if (!ctx->rotating && (e->x != ctx->window_cursor_x || e->y != ctx->window_cursor_y))
+	if (!ctx->rotating && (e->x != ctx->last_cursor_x || e->y != ctx->last_cursor_y))
 	{
 		prev_angle = ctx->cam.total_angle;
-		ctx->cam.total_angle += 0.01 * (e->y - ctx->window_cursor_y);
+		ctx->cam.total_angle += 0.01 * (e->y - ctx->last_cursor_y);
 		if (ctx->cam.total_angle > M_PI / 2 - 0.1)
 			ctx->cam.total_angle = prev_angle;
 		else if (ctx->cam.total_angle < -M_PI / 2 + 0.1)
 			ctx->cam.total_angle = prev_angle;
 		else
-			rotation_around_axis_vec(&ctx->cam.pos, &ctx->cam.norm_vec, 0.01 * (e->y - ctx->window_cursor_y));
+			rotation_around_axis_vec(&ctx->cam.pos, &ctx->cam.norm_vec, 0.01 * (e->y - ctx->last_cursor_y));
 		//Obsolete, as we limit the angle the cam can be rotated, so it can't do more than 180 degrees
 		if (ctx->cam.total_angle > M_PI / 2)
 		{
@@ -121,11 +120,11 @@ gboolean	mouse_motion(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 			ctx->cam.up_vec.y = -ctx->cam.up_vec.y;
 			ctx->cam.total_angle += M_PI;
 		}
-		rotation_vec_y(&ctx->cam.pos, -0.01 * (e->x - ctx->window_cursor_x));
-		rotation_vec_y(&ctx->cam.norm_vec, -0.01 * (e->x - ctx->window_cursor_x));
+		rotation_vec_y(&ctx->cam.pos, -0.01 * (e->x - ctx->last_cursor_x));
+		rotation_vec_y(&ctx->cam.norm_vec, -0.01 * (e->x - ctx->last_cursor_x));
 		init_view_matrix(&ctx->cam.pos, &ctx->cam.look_at, &ctx->cam.up_vec, &ctx->cam.view_matrix);
-		device = gdk_seat_get_pointer(gdk_display_get_default_seat(gdk_display_get_default()));
-		gdk_device_warp(device, gdk_screen_get_default(), ctx->screen_cursor_x, ctx->screen_cursor_y);
+		ctx->last_cursor_x = e->x;
+		ctx->last_cursor_y = e->y;
 	}
 	return (TRUE);
 }

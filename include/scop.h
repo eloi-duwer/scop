@@ -106,10 +106,8 @@ typedef struct	s_context {
 	GLuint			max_pos_handle;
 	char			*filename;
 	char			*text_name;
-	gdouble			screen_cursor_x;
-	gdouble			screen_cursor_y;
-	gdouble			window_cursor_x;
-	gdouble			window_cursor_y;
+	gdouble			last_cursor_x;
+	gdouble			last_cursor_y;
 	char			rotating;
 	int				display_target;
 	float			display_current;
