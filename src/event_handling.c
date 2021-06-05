@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:21 by eduwer            #+#    #+#             */
-/*   Updated: 2021/06/05 09:29:24 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/05 09:30:36 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,6 @@ gboolean	button_press(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 	}
 	return (TRUE);
 }
-
-#include <gdk/gdkwayland.h>
 
 gboolean	mouse_motion(GtkWidget *widget, GdkEvent *event, t_context *ctx)
 {
