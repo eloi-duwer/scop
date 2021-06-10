@@ -6,11 +6,29 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/22 17:21:34 by eduwer            #+#    #+#             */
-/*   Updated: 2021/06/03 17:06:23 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/10 13:33:15 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <scop.h>
+
+void	reverse_bmp(t_bmp_ctx *bmp)
+{
+	unsigned char	*tmp;
+	const int		w = bmp->img_width * 3;
+	const int		h = bmp->img_height;
+
+	tmp = (unsigned char *)malloc(w);
+	if (tmp == NULL)
+		return ;
+	for (int i = 0; i < h / 2; i++)
+	{
+		ft_memcpy(tmp, &bmp->data[bmp->size - (i + 1) * w], w);
+		ft_memcpy(&bmp->data[bmp->size - (i + 1) * w], &bmp->data[i * w], w);
+		ft_memcpy(&bmp->data[i * w], tmp, w);
+	}
+	free(tmp);
+}
 
 void		load_bitmapinfo_header(t_context *ctx, t_bmp_ctx *bmp, const char *filename)
 {
@@ -61,6 +79,7 @@ void		load_bmp(t_context *ctx, t_bmp_ctx *bmp, const char *filename)
 		print_error(ctx, "Malloc returned NULL\n");
 	lseek(bmp->fd, bmp->data_offset, SEEK_SET);
 	read(bmp->fd, bmp->data, bmp->size);
+	reverse_bmp(bmp);
 	close(bmp->fd);
 }
 

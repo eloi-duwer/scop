@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 00:06:16 by eduwer            #+#    #+#             */
-/*   Updated: 2021/06/04 23:03:06 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/06/10 13:33:34 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,24 +36,6 @@ static void load_skybox_cube(t_context *ctx)
 	load_object_from_file(&ctx->skybox, ctx, "./models/cube.obj", NULL);
 }
 
-static void	reverse_bmp(t_bmp_ctx *bmp)
-{
-	unsigned char	*tmp;
-	const int		w = bmp->img_width * 3;
-	const int		h = bmp->img_height;
-
-	tmp = (unsigned char *)malloc(w);
-	if (tmp == NULL)
-		return ;
-	for (int i = 0; i < h / 2; i++)
-	{
-		ft_memcpy(tmp, &bmp->data[bmp->size - (i + 1) * w], w);
-		ft_memcpy(&bmp->data[bmp->size - (i + 1) * w], &bmp->data[i * w], w);
-		ft_memcpy(&bmp->data[i * w], tmp, w);
-	}
-	free(tmp);
-}
-
 static void	load_skybox_texture(t_context *ctx)
 {
 	t_bmp_ctx	bmp;
@@ -62,7 +44,6 @@ static void	load_skybox_texture(t_context *ctx)
 	for (int i = 0; i < 6; i++)
 	{
 		load_bmp(ctx, &bmp, g_skybox_files[i]);
-		reverse_bmp(&bmp);
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, bmp.img_width, \
 			bmp.img_height, 0, GL_BGR, GL_UNSIGNED_BYTE, bmp.data);
 		free_mbp(&bmp);
